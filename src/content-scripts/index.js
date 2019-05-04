@@ -51,6 +51,7 @@ class EventRecorder {
   }
 
   sendMessage (msg) {
+    console.log('Mensaje enviado')
     console.debug('sending message', msg)
     try {
       // poor man's way of detecting whether this script was injected by an actual extension, or is loaded for
@@ -66,6 +67,8 @@ class EventRecorder {
   }
 
   recordEvent (e) {
+    console.log('Evento grabado')
+    console.log(e)
     if (this.previousEvent && this.previousEvent.timeStamp === e.timeStamp) return
     this.previousEvent = e
 
@@ -85,6 +88,13 @@ class EventRecorder {
         href: e.target.href ? e.target.href : null,
         coordinates: getCoordinates(e)
       }
+      // Si se presiona F2 (113)  se envia la accion para observar apuesta (ver como hacer el click derecho)
+      if (msg.keyCode === 113) {
+        msg.action = 'SEND_APUESTA'
+        msg.control = 'SEND_APUESTA'
+      }
+
+      console.log(msg)
       this.sendMessage(msg)
     } catch (e) {}
   }

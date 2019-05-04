@@ -27,6 +27,9 @@
           <button class="btn btn-sm btn-primary btn-outline-primary" @click="togglePause" v-show="isRecording">
             {{pauseButtonText}}
           </button>
+           <button class="btn btn-sm"  :class="isRecording ? 'btn-danger' : 'btn-primary'">
+            GRABAR ACCION
+          </button>
           <a href="#" @click="showResultsTab = true" v-show="code">view code</a>
         </div>
         <ResultsTab :code="code" :copy-link-text="copyLinkText" :restart="restart" :set-copying="setCopying" v-show="showResultsTab"/>

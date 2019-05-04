@@ -1,4 +1,5 @@
 import pptrActions from '../code-generator/pptr-actions'
+import CodeGenerator from '../code-generator/CodeGenerator'
 
 class RecordingController {
   constructor () {
@@ -113,6 +114,7 @@ class RecordingController {
   }
 
   handleMessage (msg, sender) {
+    console.log('Recibido mensaje en la extension')
     if (msg.control) return this.handleControlMessage(msg, sender)
 
     // to account for clicks etc. we need to record the frameId and url to later target the frame in playback
@@ -131,6 +133,19 @@ class RecordingController {
     if (msg.control === 'event-recorder-started') chrome.browserAction.setBadgeText({ text: this._badgeState })
     if (msg.control === 'get-viewport-size') this.recordCurrentViewportSize(msg.coordinates)
     if (msg.control === 'get-current-url') this.recordCurrentUrl(msg.href)
+    if (msg.control === 'SEND_APUESTA') {
+      this.stop()
+      chrome.storage.local.get(['recording', 'options'], ({ recording, options }) => {
+        console.debug('loaded recording', recording)
+        console.debug('loaded options', options)
+
+        const codeOptions = options ? options.code : {}
+
+        const codeGen = new CodeGenerator(codeOptions)
+        const code = codeGen.generate(recording)
+        console.log(code)
+      })
+    }
   }
 
   handleNavigation ({ frameId }) {
