@@ -62,8 +62,8 @@ class RecordingController {
     chrome.webNavigation.onBeforeNavigate.removeListener(this._boundedWaitHandler)
 
     chrome.browserAction.setIcon({ path: './images/icon-black.png' })
-    chrome.browserAction.setBadgeText({text: this._badgeState})
-    chrome.browserAction.setBadgeBackgroundColor({color: '#45C8F1'})
+    chrome.browserAction.setBadgeText({ text: this._badgeState })
+    chrome.browserAction.setBadgeBackgroundColor({ color: '#45C8F1' })
 
     chrome.storage.local.set({ recording: this._recording }, () => {
       console.debug('recording stored')
@@ -97,14 +97,14 @@ class RecordingController {
   recordCurrentUrl (href) {
     if (!this._hasGoto) {
       console.debug('recording goto* for:', href)
-      this.handleMessage({selector: undefined, value: undefined, action: pptrActions.GOTO, href})
+      this.handleMessage({ selector: undefined, value: undefined, action: pptrActions.GOTO, href })
       this._hasGoto = true
     }
   }
 
   recordCurrentViewportSize (value) {
     if (!this._hasViewPort) {
-      this.handleMessage({selector: undefined, value, action: pptrActions.VIEWPORT})
+      this.handleMessage({ selector: undefined, value, action: pptrActions.VIEWPORT })
       this._hasViewPort = true
     }
   }
@@ -114,7 +114,19 @@ class RecordingController {
   }
 
   handleMessage (msg, sender) {
-    console.log('Recibido mensaje en la extension')
+    console.log('Recibido mensaje en la extension que hay que enviar a servidor')
+    // debugger
+
+    var xhttp = new XMLHttpRequest()
+    xhttp.onreadystatechange = () => {
+      if (this.readyState === 4 && this.status === 200) {
+        alert('Ha llegado la peticion')
+      }
+    }
+    xhttp.open('POST', 'https://www.google.es', true)
+    xhttp.send(JSON.stringify(msg))
+    console.log(msg)
+
     if (msg.control) return this.handleControlMessage(msg, sender)
 
     // to account for clicks etc. we need to record the frameId and url to later target the frame in playback

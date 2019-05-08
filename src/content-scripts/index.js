@@ -75,6 +75,7 @@ class EventRecorder {
     // we explicitly catch any errors and swallow them, as none node-type events are also ingested.
     // for these events we cannot generate selectors, which is OK
     try {
+      // Aqui se obtiene e selector a aprtir del evento
       const selector = this.dataAttribute && e.target.hasAttribute && e.target.hasAttribute(this.dataAttribute)
         ? formatDataSelector(e.target, this.dataAttribute)
         : finder(e.target, {seedMinLength: 5, optimizedMinLength: 10})

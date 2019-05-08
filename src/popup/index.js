@@ -3,6 +3,9 @@ import VueHighlightJS from 'vue-highlightjs'
 import VueClipboard from 'vue-clipboard2'
 import App from './components/App.vue'
 import '../styles/style.scss'
+import VueResource from 'vue-resource'
+
+Vue.use(VueResource)
 
 Vue.config.productionTip = false
 Vue.use(VueHighlightJS)
