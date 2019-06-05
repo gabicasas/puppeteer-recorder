@@ -94,7 +94,8 @@ class EventRecorder {
         msg.action = 'SEND_APUESTA'
         msg.control = 'SEND_APUESTA'
       }
-
+      // Seguarda la url para posteriormente procesarlo y enviarlo a servidor
+      msg.actualUrl = window.location.href
       console.log(msg)
       this.sendMessage(msg)
     } catch (e) {}

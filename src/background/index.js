@@ -1,3 +1,4 @@
+/* eslint-disable standard/object-curly-even-spacing */
 import pptrActions from '../code-generator/pptr-actions'
 import CodeGenerator from '../code-generator/CodeGenerator'
 
@@ -117,15 +118,21 @@ class RecordingController {
     console.log('Recibido mensaje en la extension que hay que enviar a servidor')
     // debugger
 
-    var xhttp = new XMLHttpRequest()
-    xhttp.onreadystatechange = () => {
-      if (this.readyState === 4 && this.status === 200) {
-        alert('Ha llegado la peticion')
+    if (msg.action === 'SEND_APUESTA') {
+      var xhttp = new XMLHttpRequest()
+   
+      xhttp.onreadystatechange = () => {
+        if (this.readyState === 4 && this.status === 200) {
+          alert('Ha llegado la peticion')
+        }
       }
+      console.log(msg)
+      var data = {'option': msg.selector, 'fee': 7, 'url': msg.actualUrl, 'bet': 1 }
+      console.log(data)
+      xhttp.open('POST', 'http://localhost:3000/bet/saveOption', true)
+      xhttp.setRequestHeader('Content-Type', 'application/json')
+      xhttp.send(JSON.stringify(data))
     }
-    xhttp.open('POST', 'https://www.google.es', true)
-    xhttp.send(JSON.stringify(msg))
-    console.log(msg)
 
     if (msg.control) return this.handleControlMessage(msg, sender)
 
@@ -145,7 +152,7 @@ class RecordingController {
     if (msg.control === 'event-recorder-started') chrome.browserAction.setBadgeText({ text: this._badgeState })
     if (msg.control === 'get-viewport-size') this.recordCurrentViewportSize(msg.coordinates)
     if (msg.control === 'get-current-url') this.recordCurrentUrl(msg.href)
-    if (msg.control === 'SEND_APUESTA') {
+   /* if (msg.control === 'SEND_APUESTA') {
       this.stop()
       chrome.storage.local.get(['recording', 'options'], ({ recording, options }) => {
         console.debug('loaded recording', recording)
@@ -157,7 +164,7 @@ class RecordingController {
         const code = codeGen.generate(recording)
         console.log(code)
       })
-    }
+    } */
   }
 
   handleNavigation ({ frameId }) {
