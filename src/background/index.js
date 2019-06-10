@@ -118,7 +118,16 @@ class RecordingController {
     console.log('Recibido mensaje en la extension que hay que enviar a servidor')
     // debugger
 
-    if (msg.action === 'SEND_APUESTA') {
+    /**
+     * 
+     * 
+     * En caso de click derecho se envia el elemento al servidor
+     * 
+     * 
+     * 
+     * 
+     */
+    if (msg.action === 'contextmenu') {
       var xhttp = new XMLHttpRequest()
    
       xhttp.onreadystatechange = () => {
@@ -132,8 +141,8 @@ class RecordingController {
       xhttp.open('POST', 'http://localhost:3000/bet/saveOption', true)
       xhttp.setRequestHeader('Content-Type', 'application/json')
       xhttp.send(JSON.stringify(data))
-    }
-
+    } else { console.log('otro evento', msg) }
+   
     if (msg.control) return this.handleControlMessage(msg, sender)
 
     // to account for clicks etc. we need to record the frameId and url to later target the frame in playback
@@ -146,7 +155,7 @@ class RecordingController {
         console.debug('stored recording updated')
       })
     }
-  }
+  } 
 
   handleControlMessage (msg, sender) {
     if (msg.control === 'event-recorder-started') chrome.browserAction.setBadgeText({ text: this._badgeState })

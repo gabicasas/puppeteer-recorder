@@ -6,8 +6,8 @@ export default {
   SELECT: 'select',
   SUBMIT: 'submit',
   LOAD: 'load',
-  UNLOAD: 'unload',
-  CONTEXTMENU: 'contextmenu'
+  UNLOAD: 'unload'
+  , CONTEXTMENU: 'contextmenu'
 }
 
 // const events = [
