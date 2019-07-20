@@ -10,6 +10,9 @@
         <p class="text-muted text-center loading" v-show="liveEvents.length === 0">Waiting for events</p>
         <ul class="event-list">
           <li v-for="(event, index) in liveEvents" :key="index" class="event-list-item">
+            <div>
+              Dinamic Data <input type="checkbox" v-model="event.dinamicData"/>
+            </div>  
             <div class="event-label">
               {{index + 1}}.
             </div>

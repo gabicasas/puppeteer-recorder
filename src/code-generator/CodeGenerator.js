@@ -52,11 +52,13 @@ export default class CodeGenerator {
   }
 
   _parseEvents (events) {
-    console.debug(`generating code for ${events ? events.length : 0} events`)
+    alert('CodeGenerator._parseEvents: ' + JSON.stringify(events))
+    console.log(`generating code for ${events ? events.length : 0} events`)
     let result = ''
 
     for (let i = 0; i < events.length; i++) {
-      const { action, selector, value, href, keyCode, tagName, frameId, frameUrl } = events[i]
+      alert(JSON.stringify(events[i]))
+      const { action, selector, value, href, keyCode, tagName, frameId, frameUrl, dinamicData } = events[i]
 
       // we need to keep a handle on what frames events originate from
       this._setFrames(frameId, frameUrl)
@@ -68,7 +70,7 @@ export default class CodeGenerator {
           }
           break
         case 'click':
-          this._blocks.push(this._handleClick(selector, events))
+          this._blocks.push(this._handleClick(selector, dinamicData, events))
           break
         case 'change':
           if (tagName === 'SELECT') {
@@ -138,12 +140,23 @@ export default class CodeGenerator {
     return block
   }
 
-  _handleClick (selector) {
+  _handleClick (selector, dinamicData) {
+    alert('Gabi')
+    alert(JSON.stringify(selector))
     const block = new Block(this._frameId)
     if (this._options.waitForSelectorOnClick) {
-      block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.waitForSelector('${selector}')` })
+      if (dinamicData) {
+        block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.waitForSelector('${selector}')\n //Codigo de lectura dinamico` })
+      } else {
+        block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.waitForSelector('${selector}')` })
+      }
+    } else {
+      if (dinamicData) {
+        block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.click('${selector}')\n //Codigo de lectura dinamico` })
+      } else {
+        block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.click('${selector}')` })
+      }
     }
-    block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.click('${selector}')` })
     return block
   }
   _handleChange (selector, value) {

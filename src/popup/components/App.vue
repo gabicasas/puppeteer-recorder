@@ -2,7 +2,7 @@
   <div id="puppeteer-recorder" class="recorder">
     <div class="header">
       <a href="#" @click="goHome">
-        Puppeteer recorder <span class="text-muted"><small>{{version}}</small></span>
+        Puppeteer recorder <span class="text-muted"><small>{{version}} PFC x</small></span>
       </a>
       <div class="left">
         <div class="recording-badge" v-show="isRecording">
@@ -109,7 +109,7 @@ export default {
         this.bus.postMessage({ action: 'start' })
       },
       stop () {
-        alert('hoala')
+      
         console.debug('stop recorder')
         this.bus.postMessage({ action: 'stop' })
 
@@ -122,7 +122,11 @@ export default {
 
           const codeGen = new CodeGenerator(codeOptions)
           
-          this.code = codeGen.generate(this.recording)
+          alert('stop:' + JSON.stringify(this.liveEvents))
+          console.log(this.liveEvents)
+          console.log(this.recording)
+          // this.code = codeGen.generate(this.recording)
+          this.code = codeGen.generate(this.liveEvents)
           this.showResultsTab = true
           this.storeState()
         })

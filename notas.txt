@@ -1,0 +1,3 @@
+Modos de ejecucion:
+
+- "npm run dev" Actualiza directamente sin necesidad de refrescar
