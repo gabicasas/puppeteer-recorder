@@ -16,6 +16,7 @@ const wrappedHeader = `(async () => {
 const wrappedFooter = `  await browser.close()
 })()`
 
+
 export const defaults = {
   wrapAsync: true,
   headless: true,
@@ -36,6 +37,12 @@ export default class CodeGenerator {
     this._hasNavigation = false
   }
 
+  static get userOptions () {
+    // If `_foo` is inherited or doesn't exist yet, treat it as `undefined`
+    return this.hasOwnProperty('_userOptions') ? this._userOptions : void 0
+  }
+  static set userOptions (v) { this._userOptions = v }
+
   generate (events) {
     return importPuppeteer + this._getHeader() + this._parseEvents(events) + this._getFooter()
   }
@@ -52,9 +59,7 @@ export default class CodeGenerator {
   }
 
   _parseEvents (events) {
-    alert('CodeGenerator._parseEvents: ' + JSON.stringify(events))
-    console.log(`generating code for ${events ? events.length : 0} events`)
-    let result = ''
+   let result = ''
 
     for (let i = 0; i < events.length; i++) {
       alert(JSON.stringify(events[i]))
@@ -141,20 +146,19 @@ export default class CodeGenerator {
   }
 
   _handleClick (selector, dinamicData) {
-    alert('Gabi')
-    alert(JSON.stringify(selector))
+   
     const block = new Block(this._frameId)
     if (this._options.waitForSelectorOnClick) {
       if (dinamicData) {
-        block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.waitForSelector('${selector}')\n //Codigo de lectura dinamico` })
+        block.addLine({ type: domEvents.CLICK, value: `${this._options.clickCode}await ${this._frame}.waitForSelector('${selector}')\n //Codigo de lectura dinamico` })
       } else {
-        block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.waitForSelector('${selector}')` })
+        block.addLine({ type: domEvents.CLICK, value: `${this._options.clickCode}await ${this._frame}.waitForSelector('${selector}')` })
       }
     } else {
       if (dinamicData) {
-        block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.click('${selector}')\n //Codigo de lectura dinamico` })
+        block.addLine({ type: domEvents.CLICK, value: `${this._options.clickCode}await ${this._frame}.click('${selector}')\n //Codigo de lectura dinamico` })
       } else {
-        block.addLine({ type: domEvents.CLICK, value: `await ${this._frame}.click('${selector}')` })
+        block.addLine({ type: domEvents.CLICK, value: `${this._options.clickCode}await ${this._frame}.click('${selector}')` })
       }
     }
     return block
@@ -203,3 +207,15 @@ export default class CodeGenerator {
     }
   }
 }
+
+/*
+* Almacena las opciones de usuario de la extension
+*/
+CodeGenerator.userOptions = {}
+/*
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  console.debug('Han cambiado las propiedades')
+  console.debug(CodeGenerator.userOptions)
+   debugger
+ })
+*/

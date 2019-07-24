@@ -19,6 +19,13 @@
               <small>Define a <code>data-*</code> attribute that we'll attempt to use when selecting the elements. This is handy
                 when React or Vue based apps generate random class names.</small>
             </div>
+
+            <div class="settings-group">
+              <label class="settings-label">Evento onClick</label>
+              <textarea id="options-code-onClick" v-model="options.code.clickCode" @change="save" placeholder="add multiple lines"></textarea>
+              <small>Define el codigo que quiere que sea generado para simular un click de raton</small>
+            </div>
+
           </div>
         </div>
         <div class="settings-block">
@@ -56,6 +63,7 @@
                 add blank lines between code blocks
               </label>
             </div>
+            
           </div>
         </div>
       </div>

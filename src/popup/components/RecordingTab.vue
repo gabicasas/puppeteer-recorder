@@ -1,6 +1,6 @@
 <template>
   <div class="tab recording-tab">
-    <div class="content">
+      <div class="content">
       <div class="empty" v-show="!isRecording">
         <img src="/images/Desert.svg" alt="desert" width="78px">
         <h3>No recorded events yet</h3>

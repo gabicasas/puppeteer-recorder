@@ -61,7 +61,9 @@ const base = {
   plugins: [
     new CopyPlugin([
       { from: './src/manifest.json', to: './manifest.json' },
-      { from: './src/images', to: 'images' }
+      { from: './src/images', to: 'images' },
+      { from: './src/devtools/devtoolsBackground.html', to: './devtoolsBackground.html' },
+      { from: './src/devtools/devtoolsBackground.js', to: './devtoolsBackground.js' }
     ]),
     new HtmlWebpackPlugin({
       template: './src/popup/template.html',

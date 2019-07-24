@@ -3,13 +3,17 @@
   "version": "0.5.2",
   "manifest_version": 2,
   "description": "A Chrome extension for recording browser interaction and generating Puppeteer scripts",
+  "devtools_page": "devtoolsBackground.html",
+  "minimum_chrome_version" : "18",
   "permissions": [
     "storage",
+    "contextMenus" ,
     "webNavigation",
     "tabs",
     "*://*/"
   ],
   "icons" : {
+    "16": "images/app_icon_128.png",
     "128": "images/app_icon_128.png"
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
