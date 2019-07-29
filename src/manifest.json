@@ -4,11 +4,12 @@
   "manifest_version": 2,
   "description": "A Chrome extension for recording browser interaction and generating Puppeteer scripts",
   "devtools_page": "devtoolsBackground.html",
-  "minimum_chrome_version" : "18",
+  "minimum_chrome_version" : "31",
   "permissions": [
     "storage",
     "contextMenus" ,
     "webNavigation",
+    "debugger",
     "tabs",
     "*://*/"
   ],
@@ -21,6 +22,7 @@
     "default_icon": "images/icon-black.png",
     "default_title": "Puppeteer Recorder",
     "default_popup": "index.html"
+   
   },
   "background": {
     "scripts": [

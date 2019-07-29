@@ -2,6 +2,24 @@
 import pptrActions from '../code-generator/pptr-actions'
 import CodeGenerator from '../code-generator/CodeGenerator'
 
+/*
+
+Este se ejecuta en la extension desde el inicio
+
+
+Para enviar comando al depurador. el primer parametro es el tab que se esta depurando
+https://developer.chrome.com/extensions/debugger#method-sendCommand
+
+chrome.debugger.sendCommand( Debuggee target, string method, object commandParams, function callback)
+
+*/
+alert('background')
+//chrome.debugger.getTargets((targets) => {
+//  debugger
+//})
+
+
+
 class RecordingController {
   constructor () {
     this._recording = []
@@ -20,6 +38,11 @@ class RecordingController {
   boot () {
     chrome.extension.onConnect.addListener(port => {
       console.debug('listeners connected')
+      // chrome.tabs.create({url: 'index.html'}) Se enbucla
+      chrome.browserAction.onClicked.addListener((tab) => {
+        console.debug('entra en el listener de abrir fuera')
+        chrome.tabs.create({url: 'index.html'})
+      }) 
       port.onMessage.addListener(msg => {
         if (msg.action && msg.action === 'start') this.start()
         if (msg.action && msg.action === 'stop') this.stop()

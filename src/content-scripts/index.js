@@ -1,6 +1,20 @@
 import eventsToRecord from '../code-generator/dom-events-to-record'
 import finder from '@medv/finder'
 
+/*
+
+Este es el que se ejecuta en la pagina desde el incio
+
+
+
+*/
+
+
+//chrome.debugger.getTargets((targets) => {
+//  debugger
+//})
+
+
 class EventRecorder {
   constructor () {
     this.eventLog = []
@@ -51,6 +65,7 @@ class EventRecorder {
   }
 
   sendMessage (msg) {
+    debugger
     console.log('Mensaje enviado')
     console.debug('sending message', msg)
     try {
