@@ -23,11 +23,16 @@ export const defaults = {
   waitForNavigation: true,
   waitForSelectorOnClick: true,
   blankLinesBetweenBlocks: true,
-  dataAttribute: ''
+  dataAttribute: '',
+  // code: {
+  clickCode: 'await ${frame}.waitForSelector(${selector})',
+  waitClickCode: 'await ${frame}.waitForSelector(${selector})',
+  keyDownCode: 'await ${frame}.type(${selector}, ${value})'
+  // }
 }
 
 export default class CodeGenerator {
-  constructor (options) {
+  constructor(options) {
     this._options = Object.assign(defaults, options)
     this._blocks = []
     this._frame = 'page'
@@ -37,29 +42,29 @@ export default class CodeGenerator {
     this._hasNavigation = false
   }
 
-  static get userOptions () {
+  static get userOptions() {
     // If `_foo` is inherited or doesn't exist yet, treat it as `undefined`
     return this.hasOwnProperty('_userOptions') ? this._userOptions : void 0
   }
-  static set userOptions (v) { this._userOptions = v }
+  static set userOptions(v) { this._userOptions = v }
 
-  generate (events) {
+  generate(events) {
     return importPuppeteer + this._getHeader() + this._parseEvents(events) + this._getFooter()
   }
 
-  _getHeader () {
+  _getHeader() {
     console.debug(this._options)
     let hdr = this._options.wrapAsync ? wrappedHeader : header
     hdr = this._options.headless ? hdr : hdr.replace('launch()', 'launch({ headless: false })')
     return hdr
   }
 
-  _getFooter () {
+  _getFooter() {
     return this._options.wrapAsync ? wrappedFooter : footer
   }
 
-  _parseEvents (events) {
-   let result = ''
+  _parseEvents(events) {
+    let result = ''
 
     for (let i = 0; i < events.length; i++) {
       alert(JSON.stringify(events[i]))
@@ -117,7 +122,7 @@ export default class CodeGenerator {
     return result
   }
 
-  _setFrames (frameId, frameUrl) {
+  _setFrames(frameId, frameUrl) {
     if (frameId && frameId !== 0) {
       this._frameId = frameId
       this._frame = `frame_${frameId}`
@@ -128,7 +133,7 @@ export default class CodeGenerator {
     }
   }
 
-  _postProcess () {
+  _postProcess() {
     // when events are recorded from different frames, we want to add a frame setter near the code that uses that frame
     if (Object.keys(this._allFrames).length > 0) {
       this._postProcessSetFrames()
@@ -139,50 +144,45 @@ export default class CodeGenerator {
     }
   }
 
-  _handleKeyDown (selector, value) {
+  _handleKeyDown(selector, value) {
     const block = new Block(this._frameId)
-    block.addLine({ type: domEvents.KEYDOWN, value: `await ${this._frame}.type('${selector}', '${value}')` })
+    let code = this._options.keyDownCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector).replace(/\${value}/g, value)
+    block.addLine({ type: domEvents.KEYDOWN, value: code })
     return block
   }
 
-  _handleClick (selector, dinamicData) {
-   
+  _handleClick(selector, dinamicData) {
     const block = new Block(this._frameId)
+    debugger
+    let code = ''
     if (this._options.waitForSelectorOnClick) {
-      if (dinamicData) {
-        block.addLine({ type: domEvents.CLICK, value: `${this._options.clickCode}await ${this._frame}.waitForSelector('${selector}')\n //Codigo de lectura dinamico` })
-      } else {
-        block.addLine({ type: domEvents.CLICK, value: `${this._options.clickCode}await ${this._frame}.waitForSelector('${selector}')` })
-      }
+      code = this._options.waitClickCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector)
     } else {
-      if (dinamicData) {
-        block.addLine({ type: domEvents.CLICK, value: `${this._options.clickCode}await ${this._frame}.click('${selector}')\n //Codigo de lectura dinamico` })
-      } else {
-        block.addLine({ type: domEvents.CLICK, value: `${this._options.clickCode}await ${this._frame}.click('${selector}')` })
-      }
+      code = this._options.clickCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector)
     }
+    block.addLine({ type: domEvents.CLICK, value: code })
     return block
   }
-  _handleChange (selector, value) {
+  _handleChange(selector, value) {
     return new Block(this._frameId, { type: domEvents.CHANGE, value: `await ${this._frame}.select('${selector}', '${value}')` })
   }
-  _handleGoto (href) {
+  _handleGoto(href) {
     return new Block(this._frameId, { type: pptrActions.GOTO, value: `await ${this._frame}.goto('${href}')` })
   }
 
-  _handleViewport (width, height) {
+  _handleViewport(width, height) {
     return new Block(this._frameId, { type: pptrActions.VIEWPORT, value: `await ${this._frame}.setViewport({ width: ${width}, height: ${height} })` })
   }
 
-  _handleWaitForNavigation () {
+  _handleWaitForNavigation() {
     const block = new Block(this._frameId)
     if (this._options.waitForNavigation) {
-      block.addLine({type: pptrActions.NAVIGATION, value: `await navigationPromise`})
+      block.addLine({ type: pptrActions.NAVIGATION, value: `await navigationPromise` })
     }
     return block
   }
 
-  _postProcessSetFrames () {
+  _postProcessSetFrames() {
     for (let [i, block] of this._blocks.entries()) {
       const lines = block.getLines()
       for (let line of lines) {
@@ -197,7 +197,7 @@ export default class CodeGenerator {
     }
   }
 
-  _postProcessAddBlankLines () {
+  _postProcessAddBlankLines() {
     let i = 0
     while (i <= this._blocks.length) {
       const blankLine = new Block()

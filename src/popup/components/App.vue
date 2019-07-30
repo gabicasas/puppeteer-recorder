@@ -151,7 +151,6 @@ export default {
         ({ recording, options }) => {
           console.debug("loaded recording", recording);
           console.debug("loaded options", options);
-          debugger;
           this.recording = recording;
           const codeOptions = options ? options.code : {};
 

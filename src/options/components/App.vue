@@ -93,59 +93,123 @@
               </div>
             </div>
 
-            <p>I'm the first tab</p>
+           
           </b-tab>
 
           <b-tab title="Generador" active>
             <b-form>
-            <b-tabs pills card vertical>
-              <b-tab title="onClick" active>
-                <b-card-text>Define el codigo que quiere que sea generado para simular un click de raton</b-card-text>
-                <div class="settings-group">
-                 
-                 
-                    <b-form-group id="input-group-2" label="Variables disponibles: {frame},{selector}" label-for="options-code-onClick">
-                  <b-form-textarea
-                     id="options-code-onClick"
-                    v-model="options.code.clickCode"
-                    @change="save"
-                    placeholder="add multiple lines"
-                  ></b-form-textarea>
+              <b-tabs pills card vertical>
+                <b-tab title="onClick" active>
+                  <b-card-text>Define el codigo que quiere que sea generado para simular un click de raton</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                      label="Variables disponibles: {frame},{selector}"
+                      label-for="options-code-onClick"
+                    >
+                      <b-form-textarea
+                        id="options-code-onClick"
+                        v-model="options.code.clickCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
                     </b-form-group>
-                
-                  
-                </div>
-              </b-tab>
- <b-tab title="onKeyDown" active>
-                <b-card-text>Define el codigo que quiere que sea generado para simular una pulsacion de tecla</b-card-text>
-                <div class="settings-group">
-                 
-                 
-                    <b-form-group id="input-group-2" label="Variables disponibles: {frame},{selector},{value}" label-for="options-code-onKeyDown">
-                  <b-form-textarea
-                     id="options-code-onKeyDown"
-                    v-model="options.code.keyDownCode"
-                    @change="save"
-                    placeholder="add multiple lines"
-                  ></b-form-textarea>
+                    <b-form-group
+                      label="waitforSelector Variables disponibles: {frame},{selector}"
+                      label-for="options-code-wait-onClick"
+                    >
+                      <b-form-textarea
+                        id="options-code-wait-onClick"
+                        v-model="options.code.waitClickCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
                     </b-form-group>
-                
-                  
-                </div>
-              </b-tab>
+                  </div>
+                </b-tab>
 
+                <b-tab title="onKeyDown" active>
+                  <b-card-text>Define el codigo que quiere que sea generado para simular una pulsacion de tecla</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                      label="Variables disponibles: {frame},{selector},{value}"
+                      label-for="options-code-onKeyDown"
+                    >
+                      <b-form-textarea
+                        id="options-code-onKeyDown"
+                        v-model="options.code.keyDownCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                  </div>
+                </b-tab>
 
+                <b-tab title="Change" active>
+                  <b-card-text>Define el codigo que quiere que sea generado para simular Change (Pendiente de ver que es)</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                      label="Variables disponibles: {frame},{selector},{value}"
+                      label-for="options-code-change"
+                    >
+                      <b-form-textarea
+                        id="options-code-change"
+                        v-model="options.code.change"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                  </div>
+                </b-tab>
 
+                <b-tab title="Go to" active>
+                  <b-card-text>Define el codigo que quiere que sea generado para simular el cambio de pagina (actualización de window.location)</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                      label="Variables disponibles: {frame},{href}"
+                      label-for="options-code-goTo"
+                    >
+                      <b-form-textarea
+                        id="options-code-goTo"
+                        v-model="options.code.goTo"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                  </div>
+                </b-tab>
 
+                <b-tab title="Handle viewPort" active>
+                  <b-card-text>Define el codigo que maneja el cambio del tamaño de pantalla</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                      label="Variables disponibles: {frame},{width},{height}"
+                      label-for="options-code-viewport"
+                    >
+                      <b-form-textarea
+                        id="options-code-viewport"
+                        v-model="options.code.viewport"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                  </div>
+                </b-tab>
 
-              <b-tab title="Tab 2">
-                <b-card-text>Tab Contents 2</b-card-text>
-              </b-tab>
-              <b-tab title="Tab 3">
-                <b-card-text>Tab Contents 3</b-card-text>
-              </b-tab>
-            </b-tabs>
-             </b-form>
+                <b-tab title="Handle wait navigation" active>
+                  <b-card-text>Define el codigo que maneja la espera de la carga completa de la pagina</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group label="Sin variables" label-for="options-code-waitNav">
+                      <b-form-textarea
+                        id="options-code-waitNav"
+                        v-model="options.code.waitNav"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                  </div>
+                </b-tab>
+              </b-tabs>
+            </b-form>
           </b-tab>
         </b-tabs>
       </div>
