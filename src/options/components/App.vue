@@ -113,6 +113,7 @@
                         placeholder="add multiple lines"
                       ></b-form-textarea>
                     </b-form-group>
+                    <b-button @click="resetClick">Reset</b-button>
                     <b-form-group
                       label="waitforSelector Variables disponibles: {frame},{selector}"
                       label-for="options-code-wait-onClick"
@@ -153,7 +154,7 @@
                     >
                       <b-form-textarea
                         id="options-code-change"
-                        v-model="options.code.change"
+                        v-model="options.code.changeCode"
                         @change="save"
                         placeholder="add multiple lines"
                       ></b-form-textarea>
@@ -170,7 +171,7 @@
                     >
                       <b-form-textarea
                         id="options-code-goTo"
-                        v-model="options.code.goTo"
+                        v-model="options.code.goToCode"
                         @change="save"
                         placeholder="add multiple lines"
                       ></b-form-textarea>
@@ -187,7 +188,7 @@
                     >
                       <b-form-textarea
                         id="options-code-viewport"
-                        v-model="options.code.viewport"
+                        v-model="options.code.viewportCode"
                         @change="save"
                         placeholder="add multiple lines"
                       ></b-form-textarea>
@@ -195,29 +196,72 @@
                   </div>
                 </b-tab>
 
-                <b-tab title="Handle wait navigation" active>
-                  <b-card-text>Define el codigo que maneja la espera de la carga completa de la pagina</b-card-text>
+                <b-tab title="Read Data" active>
+                  <b-card-text>Define el codigo para leer informacion</b-card-text>
                   <div class="settings-group">
-                    <b-form-group label="Sin variables" label-for="options-code-waitNav">
+                    <b-form-group
+                      label="Variables disponibles: {frame},{selector}"
+                      label-for="options-code-readData"
+                    >
                       <b-form-textarea
-                        id="options-code-waitNav"
-                        v-model="options.code.waitNav"
+                        id="options-code-readData"
+                        v-model="options.code.readDataCode"
                         @change="save"
                         placeholder="add multiple lines"
                       ></b-form-textarea>
                     </b-form-group>
+                    <b-button>Reset</b-button>
+                  
+                    <b-form-group
+                      label="Dinamic Variables disponibles: {frame}"
+                      label-for="options-code-readDinamicData"
+                    >
+                      <b-form-textarea
+                        id="options-code-readDinamicData"
+                        v-model="options.code.readDinamicDataCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+
+                      <b-form-group
+                      label="Wait Variables disponibles: {frame}"
+                      label-for="options-code-readWaitData"
+                    >
+                      <b-form-textarea
+                        id="options-code-readWaitData"
+                        v-model="options.code.readWaitDataCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+
+                    <b-form-group
+                      label="Wait Dinamic Variables disponibles: {frame}"
+                      label-for="options-code-readDinamicWaitData"
+                    >
+                      <b-form-textarea
+                        id="options-code-readDinamicWaitData"
+                        v-model="options.code.readWaitDinamicDataCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+
+
                   </div>
                 </b-tab>
+
+                
+
+               
               </b-tabs>
             </b-form>
           </b-tab>
         </b-tabs>
       </div>
       <div class="footer">
-        sponsored by
-        <a href="https://checklyhq.com" target="_blank">
-          <img src="/images/text_racoon_logo.svg" alt />
-        </a>
+       
       </div>
     </div>
   </div>
@@ -236,13 +280,17 @@ export default {
     return {
       loading: true,
       saving: false,
-      options: defaults
+      options: defaults,
+      defaultCode: {}
     };
   },
   mounted() {
     this.load();
   },
   methods: {
+    resetClick() {
+      this.options.code.clickCode=this.defaultCode.code.clickCode
+    },
     save() {
       this.saving = true;
       this.$chrome.storage.local.set({ options: this.options }, () => {
@@ -253,10 +301,14 @@ export default {
       });
     },
     load() {
+      this.defaultCode = JSON.parse(JSON.stringify(defaults))
       this.$chrome.storage.local.get("options", ({ options }) => {
         if (options) {
           console.debug("loaded options", JSON.stringify(options));
-          this.options = options;
+          for(let i in options){
+            this.options[i]=options[i];
+          }
+          //this.options = options;
         }
         this.loading = false;
       });

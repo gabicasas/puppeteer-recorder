@@ -105,10 +105,7 @@ class EventRecorder {
         coordinates: getCoordinates(e)
       }
       // Si se presiona F2 (113)  se envia la accion para observar apuesta (ver como hacer el click derecho)
-      if (msg.keyCode === 113) {
-        msg.action = 'SEND_APUESTA'
-        msg.control = 'SEND_APUESTA'
-      }
+    
       // Seguarda la url para posteriormente procesarlo y enviarlo a servidor
       msg.actualUrl = window.location.href
       console.log(msg)
