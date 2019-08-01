@@ -1,5 +1,6 @@
 import eventsToRecord from '../code-generator/dom-events-to-record'
 import finder from '@medv/finder'
+import Simmer from 'simmerjs'
 
 /*
 
@@ -21,6 +22,9 @@ class EventRecorder {
     this.previousEvent = null
     this.dataAttribute = null
     this.isTopFrame = (window.location === window.parent.location)
+    this.actualSelector=null;
+
+    this.simmer = new Simmer(window, { /* some custom configuration */ })
   }
 
   start () {
@@ -39,6 +43,12 @@ class EventRecorder {
   }
 
   _initializeRecorder () {
+
+    window.addEventListener('mousemove', (evt) => {
+      window.positionglobal=evt;
+      this.actualSelector=this.simmer(evt.path[0]);
+    });
+
     const events = Object.values(eventsToRecord)
     if (!window.pptRecorderAddedControlListeners) {
       this.addAllListeners(events)
@@ -65,7 +75,7 @@ class EventRecorder {
   }
 
   sendMessage (msg) {
-    debugger
+   
     console.log('Mensaje enviado')
     console.debug('sending message', msg)
     try {
@@ -94,7 +104,8 @@ class EventRecorder {
       const selector = this.dataAttribute && e.target.hasAttribute && e.target.hasAttribute(this.dataAttribute)
         ? formatDataSelector(e.target, this.dataAttribute)
         : finder(e.target, {seedMinLength: 5, optimizedMinLength: 10})
-
+      if(e.type.indexOf("key")!=-1)
+        debugger;
       const msg = {
         selector: selector,
         value: e.target.value,

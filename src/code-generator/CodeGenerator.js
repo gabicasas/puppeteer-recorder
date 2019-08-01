@@ -25,14 +25,14 @@ export const defaults = {
   blankLinesBetweenBlocks: true,
   dataAttribute: '',
   // code: {
-  clickCode: 'await ${frame}.waitForSelector(${selector})',
-  waitClickCode: 'await ${frame}.waitForSelector(${selector})',
-  keyDownCode: 'await ${frame}.type(${selector}, ${value})',
+  clickCode: "await ${frame}.waitForSelector('${selector}')",
+  waitClickCode: "await ${frame}.waitForSelector('${selector}')",
+  keyDownCode: "await ${frame}.type('${selector}', '${value}')",
   changeCode: 'await ${frame}.select(${selector}, ${value})',
   goToCode: 'await ${frame}.goto(${href})',
   viewportCode: 'await ${frame}.setViewport({ width: ${width}, height: ${height} })',
   readDataCode: 'readData',
-  readDinamicDataCode: 'readDinamicDataCode' ,
+  readDinamicDataCode: 'readDinamicDataCode',
   readWaitDataCode: 'readWaitData',
   readWaitDinamicDataCode: 'readWaitDinamicDataCode'
 
@@ -75,21 +75,31 @@ export default class CodeGenerator {
     let result = ''
 
     for (let i = 0; i < events.length; i++) {
-    
-      const { action, selector, value, href, keyCode, tagName, frameId, frameUrl, dinamicData } = events[i]
+
+      const { action,
+        selector,
+        value,
+        href,
+        keyCode,
+        tagName,
+        frameId,
+        frameUrl,
+        dinamicData, // Indica si el dato a capturar es dinamico
+        varData // Nombre de la variable donde se guardará el dato
+       } = events[i]
 
       // we need to keep a handle on what frames events originate from
       this._setFrames(frameId, frameUrl)
 
       switch (action) {
         case 'keydown':
-         // if (keyCode === 9) { // tab key
-         //   this._blocks.push(this._handleKeyDown(selector, value, keyCode))
-         // }
+          // if (keyCode === 9) { // tab key
+          //   this._blocks.push(this._handleKeyDown(selector, value, keyCode))
+          // }
           if (keyCode !== 113) { // F2
-              this._blocks.push(this._handleKeyDown(selector, value, keyCode))
+            this._blocks.push(this._handleKeyDown(selector, value, keyCode))
           } else {
-             this._blocks.push(this._handleReadData(selector, dinamicData))
+            this._blocks.push(this._handleReadData(selector, dinamicData, varData))
           }
           break
         case 'click':
@@ -166,7 +176,7 @@ export default class CodeGenerator {
 
   _handleClick(selector, dinamicData, events) {
     const block = new Block(this._frameId)
-     let code = ''
+    let code = ''
     if (this._options.waitForSelectorOnClick) {
       code = this._options.waitClickCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector)
     } else {
@@ -197,23 +207,23 @@ export default class CodeGenerator {
     return block
   }
 
-  _handleReadData(selector, dinamicData) {
+  _handleReadData(selector, dinamicData, varData) {
     const block = new Block(this._frameId)
     let code = ''
     if (this._options.waitForNavigation) {
-      if (dinamicData) { 
-         code = this._options.readWaitDinamicDataCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector)
+      if (dinamicData) {
+        code = this._options.readWaitDinamicDataCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector).replace(/\${varData}/g, varData)
       } else {
-        code = this._options.readWaitDataCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector)  
+        code = this._options.readWaitDataCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector).replace(/\${varData}/g, varData)
       }
 
-      
+
     } else {
-      if (dinamicData) { 
-        code = this._options.readDinamicDataCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector)
-     } else {
-       code = this._options.readDataCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector)  
-     }
+      if (dinamicData) {
+        code = this._options.readDinamicDataCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector).replace(/\${varData}/g, varData)
+      } else {
+        code = this._options.readDataCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector).replace(/\${varData}/g, varData)
+      }
     }
 
     block.addLine({ type: domEvents.KEYDOWN, value: code })

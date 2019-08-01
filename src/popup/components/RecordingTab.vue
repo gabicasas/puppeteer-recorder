@@ -10,8 +10,9 @@
         <p class="text-muted text-center loading" v-show="liveEvents.length === 0">Waiting for events</p>
         <ul class="event-list">
           <li v-for="(event, index) in liveEvents" :key="index" class="event-list-item">
-            <div>
+            <div v-if="event.action=='keydown' && event.keyCode==113">
               Dinamic Data <input type="checkbox" v-model="event.dinamicData"/>
+              <input type="text" v-model="event.varData"/>
             </div>  
             <div class="event-label">
               {{index + 1}}.
@@ -84,7 +85,7 @@
             border-top: 1px solid $gray-light;
             display: flex;
             flex: 1 1 auto;
-            height: 32px;
+            // height: 32px;
 
             .event-label {
               vertical-align: top;
