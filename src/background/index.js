@@ -13,7 +13,7 @@ https://developer.chrome.com/extensions/debugger#method-sendCommand
 chrome.debugger.sendCommand( Debuggee target, string method, object commandParams, function callback)
 
 */
-alert('background')
+
 //chrome.debugger.getTargets((targets) => {
 //  debugger
 //})

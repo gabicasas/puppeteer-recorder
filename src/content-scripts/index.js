@@ -47,6 +47,7 @@ class EventRecorder {
     window.addEventListener('mousemove', (evt) => {
       window.positionglobal=evt;
       this.actualSelector=this.simmer(evt.path[0]);
+      console.log(this.actualSelector);
     });
 
     const events = Object.values(eventsToRecord)
@@ -104,10 +105,10 @@ class EventRecorder {
       const selector = this.dataAttribute && e.target.hasAttribute && e.target.hasAttribute(this.dataAttribute)
         ? formatDataSelector(e.target, this.dataAttribute)
         : finder(e.target, {seedMinLength: 5, optimizedMinLength: 10})
-      if(e.type.indexOf("key")!=-1)
-        debugger;
+     /* if(e.type.indexOf("key")!=-1)
+        debugger;*/
       const msg = {
-        selector: selector,
+        selector: (e.type==="keydown" && e.keyCode===113)?this.actualSelector:selector,
         value: e.target.value,
         tagName: e.target.tagName,
         action: e.type,

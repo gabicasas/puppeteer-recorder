@@ -156,7 +156,7 @@ export default {
 
           const codeGen = new CodeGenerator(codeOptions);
 
-          alert("stop:" + JSON.stringify(this.liveEvents));
+        
           console.log(this.liveEvents);
           console.log(this.recording);
           // this.code = codeGen.generate(this.recording)
