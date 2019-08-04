@@ -76,6 +76,12 @@ class EventRecorder {
     })
   }
 
+  changeDevToolsSelector(element, event, index){
+    let selector=this.simmer(element);
+    event.selector=selector;
+    Bridge.sendMessage('changeSelector', {index:index,event:event}, 'devtools')
+    Bridge.sendMessage('changeSelector', {index:index,event:event}, 'content-script')
+  }
   sendMessage (msg) {
    
     console.log('Mensaje enviado')

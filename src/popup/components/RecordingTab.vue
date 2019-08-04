@@ -13,6 +13,7 @@
             <div v-if="event.action=='keydown' && event.keyCode==113">
               Dinamic Data <input type="checkbox" v-model="event.dinamicData" @change="recordEvent"/>
               <input type="text" v-model="event.varData" @change="recordEvent"/>
+              <button @click="changeSelector(event,index)">Cambiar selector</button>
             </div>  
             <div class="event-label">
               {{index + 1}}.
@@ -38,6 +39,10 @@ import EventBus from '../index.js';
       liveEvents: { type: Array, default: () => { return [] } }
     },
     methods: {
+      changeSelector(event,index){
+        this.$chrome.devtools.inspectedWindow.eval("eventRecorder.changeDevToolsSelector($0,"+JSON.stringify(event)+","+index+")", { useContentScriptContext: true })
+      },
+
       parseEventValue (event) {
         if (event.action === 'viewport*') return `width: ${event.value.width}, height: ${event.value.height}`
         if (event.action === 'goto*') return event.href

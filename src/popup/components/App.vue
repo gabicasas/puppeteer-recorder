@@ -102,7 +102,16 @@ export default {
       //this.reload();
       this.liveEvents.push(message.data)
      
-    })   
+    }) 
+    
+   Bridge.onMessage('changeSelector', async (message) => {
+      // debugger
+      console.debug(message);
+       this.liveEvents[message.data.index]=message.data.event;
+       //TODO: chapuza, solucionar esto del fallo de tener q añadir pq vue no se entera
+      this.liveEvents.push(message.data.event)
+     
+    })  
 
     this.loadState(this.reload);
    
