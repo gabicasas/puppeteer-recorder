@@ -261,7 +261,7 @@
         </b-tabs>
       </div>
       <div class="footer">
-       
+        <b-button @click="openApp">Open</b-button>
       </div>
     </div>
   </div>
@@ -288,6 +288,8 @@ export default {
     this.load();
   },
   methods: {
+
+    
     resetClick() {
       this.options.code.clickCode=this.defaultCode.code.clickCode
     },

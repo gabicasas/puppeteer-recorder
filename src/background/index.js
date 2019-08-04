@@ -1,6 +1,7 @@
 /* eslint-disable standard/object-curly-even-spacing */
 import pptrActions from '../code-generator/pptr-actions'
 import CodeGenerator from '../code-generator/CodeGenerator'
+import Bridge from 'crx-bridge'
 
 /*
 
@@ -36,21 +37,27 @@ class RecordingController {
   }
 
   boot () {
+   
+    Bridge.onMessage('do-stuff', async (message) => {
+      console.debug(message);
+      this._receiveMessage(message.data)
+    })
+
     chrome.extension.onConnect.addListener(port => {
       console.debug('listeners connected')
-      // chrome.tabs.create({url: 'index.html'}) Se enbucla
-      chrome.browserAction.onClicked.addListener((tab) => {
-        console.debug('entra en el listener de abrir fuera')
-        chrome.tabs.create({url: 'index.html'})
-      }) 
+     
       port.onMessage.addListener(msg => {
-        if (msg.action && msg.action === 'start') this.start()
-        if (msg.action && msg.action === 'stop') this.stop()
-        if (msg.action && msg.action === 'cleanUp') this.cleanUp()
-        if (msg.action && msg.action === 'pause') this.pause()
-        if (msg.action && msg.action === 'unpause') this.unPause()
+        this._receiveMessage(msg)
       })
     })
+  }
+
+  _receiveMessage(msg){
+    if (msg.action && msg.action === 'start') this.start()
+    if (msg.action && msg.action === 'stop') this.stop()
+    if (msg.action && msg.action === 'cleanUp') this.cleanUp()
+    if (msg.action && msg.action === 'pause') this.pause()
+    if (msg.action && msg.action === 'unpause') this.unPause()
   }
 
   start () {
@@ -78,7 +85,9 @@ class RecordingController {
   }
 
   stop () {
-    console.debug('stop recording')
+    
+    console.debug('stop recording 2')
+    console.debug(this._recording)
     this._badgeState = this._recording.length > 0 ? '1' : ''
 
     chrome.runtime.onMessage.removeListener(this._boundedMessageHandler)
@@ -138,33 +147,8 @@ class RecordingController {
   }
 
   handleMessage (msg, sender) {
-    console.log('Recibido mensaje en la extension que hay que enviar a servidor')
-    // debugger
-
-    /**
-     * 
-     * 
-     * En caso de click derecho se envia el elemento al servidor
-     * 
-     * 
-     * 
-     * 
-     */
-    if (msg.action === 'contextmenu') {
-      var xhttp = new XMLHttpRequest()
-   
-      xhttp.onreadystatechange = () => {
-        if (this.readyState === 4 && this.status === 200) {
-          alert('Ha llegado la peticion')
-        }
-      }
-      console.log(msg)
-      var data = {'option': msg.selector, 'fee': 7, 'url': msg.actualUrl, 'bet': 1 }
-      console.log(data)
-      xhttp.open('POST', 'http://localhost:3000/bet/saveOption', true)
-      xhttp.setRequestHeader('Content-Type', 'application/json')
-      xhttp.send(JSON.stringify(data))
-    } else { console.log('otro evento', msg) }
+    
+     console.log('evento', msg)
    
     if (msg.control) return this.handleControlMessage(msg, sender)
 

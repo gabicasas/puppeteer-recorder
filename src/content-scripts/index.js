@@ -1,6 +1,7 @@
 import eventsToRecord from '../code-generator/dom-events-to-record'
 import finder from '@medv/finder'
 import Simmer from 'simmerjs'
+import Bridge from 'crx-bridge';
 
 /*
 
@@ -78,6 +79,9 @@ class EventRecorder {
   sendMessage (msg) {
    
     console.log('Mensaje enviado')
+    Bridge.sendMessage('do-stuff', msg, 'background')
+    Bridge.sendMessage('do-stuff', msg, 'devtools')
+    Bridge.sendMessage('do-stuff', msg, 'content-script')
     console.debug('sending message', msg)
     try {
       // poor man's way of detecting whether this script was injected by an actual extension, or is loaded for

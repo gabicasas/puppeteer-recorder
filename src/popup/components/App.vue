@@ -39,10 +39,7 @@
             @click="togglePause"
             v-show="isRecording"
           >{{pauseButtonText}}</button>
-          <button
-            class="btn btn-sm"
-            :class="isRecording ? 'btn-danger' : 'btn-primary'"
-          >GRABAR ACCION</button>
+         
           <a href="#" @click="showResultsTab = true" v-show="code">view code</a>
         </div>
         <ResultsTab
@@ -55,10 +52,8 @@
         <div class="results-footer" v-show="showResultsTab">
           <button class="btn btn-sm btn-primary" @click="restart" v-show="code">Restart</button>
           <a href="#" v-clipboard:copy="code" @click="setCopying" v-show="code">{{copyLinkText}}</a>
-          <button class="btn btn-sm btn-primary" @click="test" v-show="code">Abrir al lado</button>
-          <div class="text-center my-3">
-            <b-button v-b-popover.hover="'I am popover content!'" title="Popover Title">Sobre mi</b-button>
-          </div>
+         
+         
         </div>
       </div>
       <HelpTab v-show="showHelp"></HelpTab>
@@ -72,6 +67,8 @@ import CodeGenerator from "../../code-generator/CodeGenerator";
 import RecordingTab from "./RecordingTab.vue";
 import ResultsTab from "./ResultsTab.vue";
 import HelpTab from "./HelpTab.vue";
+import Bridge from 'crx-bridge';
+import EventBus from '../index.js';
 
 
 
@@ -93,30 +90,29 @@ export default {
     };
   },
   mounted() {
-    this.loadState(() => {
-      if (this.isRecording) {
-        console.debug("opened in recording state, fetching recording events");
-        this.$chrome.storage.local.get(
-          ["recording", "code"],
-          ({ recording }) => {
-            console.debug("loaded recording", recording);
-            this.liveEvents = recording;
-          }
-        );
-      }
 
-      if (!this.isRecording && this.code) {
-        this.showResultsTab = true;
-      }
-    });
+ EventBus.$on('reloadLiveEvents',  (message) => {
+      console.log("reloadLiveEvents")
+     this.liveEvents=message;
+     
+    })
+
+  Bridge.onMessage('do-stuff', async (message) => {
+      console.debug(message);
+      //this.reload();
+      this.liveEvents.push(message.data)
+     
+    })   
+
+    this.loadState(this.reload);
+   
+    // Esto obtiene el bus que perite los postMessage
     this.bus = this.$chrome.extension.connect({ name: "recordControls" });
+
+     
   },
   methods: {
-    test() {
-      chrome.browserAction.onClicked.addListener(tab => {
-        chrome.tabs.create({ url: "index.html" });
-      });
-    },
+   
 
     toggleRecord() {
       if (this.isRecording) {
@@ -159,8 +155,8 @@ export default {
         
           console.log(this.liveEvents);
           console.log(this.recording);
-          // this.code = codeGen.generate(this.recording)
-          this.code = codeGen.generate(this.liveEvents);
+           this.code = codeGen.generate(this.recording)
+          //this.code = codeGen.generate(this.liveEvents);
           this.showResultsTab = true;
           this.storeState();
         }
@@ -180,6 +176,27 @@ export default {
     openOptions() {
       if (this.$chrome.runtime.openOptionsPage) {
         this.$chrome.runtime.openOptionsPage();
+      }
+    },
+    reload(){
+  /* this.$chrome.storage.local.onChanged((changed, areaName) => {
+      debugger;
+    }); */
+
+      if (this.isRecording) {
+        console.debug("opened in recording state, fetching recording events");
+        //setInterval(() =>
+        {this.$chrome.storage.local.get(
+          ["recording", "code"],
+          ({ recording }) => {
+            console.debug("loaded recording", recording);
+            this.liveEvents = recording;
+          }
+        );}//,1000);
+      }
+
+      if (!this.isRecording && this.code) {
+        this.showResultsTab = true;
       }
     },
     loadState(cb) {

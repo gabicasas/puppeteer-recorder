@@ -11,8 +11,8 @@
         <ul class="event-list">
           <li v-for="(event, index) in liveEvents" :key="index" class="event-list-item">
             <div v-if="event.action=='keydown' && event.keyCode==113">
-              Dinamic Data <input type="checkbox" v-model="event.dinamicData"/>
-              <input type="text" v-model="event.varData"/>
+              Dinamic Data <input type="checkbox" v-model="event.dinamicData" @change="recordEvent"/>
+              <input type="text" v-model="event.varData" @change="recordEvent"/>
             </div>  
             <div class="event-label">
               {{index + 1}}.
@@ -28,6 +28,9 @@
   </div>
 </template>
 <script>
+import Bridge from 'crx-bridge';
+import EventBus from '../index.js';
+
   export default {
     name: 'RecordingTab',
     props: {
@@ -39,6 +42,19 @@
         if (event.action === 'viewport*') return `width: ${event.value.width}, height: ${event.value.height}`
         if (event.action === 'goto*') return event.href
         if (event.action === 'navigation*') return ''
+      },
+      recordEvent () {
+        console.debug('Actualizo dato', this.liveEvents)
+        // debugger;
+       /* this.$chrome.storage.local.get(
+          ["recording", "code"],
+          ({ recording }) => {
+            console.debug("loaded recording", recording);
+            console.debug('live events',this.liveEvents);
+          }
+        ); */
+        EventBus.$emit('reloadLiveEvents', this.liveEvents)
+        // this.$chrome.storage.local.set({recording:JSON.parse(JSON.stringify(this.liveEvents))});
       }
     }
   }

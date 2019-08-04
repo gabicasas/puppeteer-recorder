@@ -20,6 +20,8 @@ Vue.use(VueClipboard)
 
 Vue.prototype.$chrome = chrome
 
+const EventBus = new Vue();
+export default EventBus;
 /* eslint-disable no-new */
 new Vue({
   el: '#root',
