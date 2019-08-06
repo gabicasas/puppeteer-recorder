@@ -99,6 +99,13 @@ export default {
 
   Bridge.onMessage('do-stuff', async (message) => {
       console.debug(message);
+      if(this.liveEvents &&  this.liveEvents[0] && this.liveEvents[0].control)
+        this.$chrome.storage.local.get(["recording"],({recording})=> 
+        {
+         
+          this.liveEvents=recording
+          
+          })
       //this.reload();
       this.liveEvents.push(message.data)
      
