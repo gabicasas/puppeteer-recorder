@@ -4,13 +4,13 @@ import Block from './Block'
 
 const importPuppeteer = `const puppeteer = require('puppeteer');\n`
 
-const header = `const browser = await puppeteer.launch()
+const header = `const browser = await puppeteer.launch(PUPPETEER_OPTS)
 const page = await browser.newPage()`
 
 const footer = `await browser.close()`
 
 const wrappedHeader = `(async () => {
-  const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch(PUPPETEER_OPTS)
   const page = await browser.newPage()\n`
 
 const wrappedFooter = `  await browser.close()
@@ -25,15 +25,22 @@ export const defaults = {
   blankLinesBetweenBlocks: true,
   dataAttribute: '',
   // code: {
-  clickCode: "await ${frame}.waitForSelector('${selector}')",
-  waitClickCode: "await ${frame}.waitForSelector('${selector}')",
-  keyDownCode: "await ${frame}.type('${selector}', '${value}')",
-  changeCode: 'await ${frame}.select(${selector}, ${value})',
-  goToCode: 'await ${frame}.goto(${href})',
+  clickCode: 'await ${frame}.click("${selector}");',
+  waitClickCode: 'await ${frame}.waitForSelector("${selector}");\n await ${frame}.click("${selector}");',
+  keyDownCode: 'await ${frame}.type("${selector}", "${value}")',
+  changeCode: 'await ${frame}.select("${selector}", "${value}")',
+  goToCode: 'await ${frame}.goto("${href}")',
   viewportCode: 'await ${frame}.setViewport({ width: ${width}, height: ${height} })',
-  readDataCode: 'readData',
+  readDataCode: 
+   'globalVar.${varData}=await ${frame}.evaluate(element => {\n'
+  +'  return document.querySelector("${selector}").innerHTML\n'
+    +'});\n',
   readDinamicDataCode: 'readDinamicDataCode',
-  readWaitDataCode: 'readWaitData',
+  readWaitDataCode: 
+  'await ${frame}.waitForSelector("${selector}")\n'
+  +'globalVar.${varData}=await ${frame}.evaluate(element => {\n'
+  +'  return document.querySelector("${selector}").innerHTML\n'
+    +'});\n',
   readWaitDinamicDataCode: 'readWaitDinamicDataCode'
 
   // }
@@ -168,6 +175,9 @@ export default class CodeGenerator {
   }
 
   _handleKeyDown(selector, value) {
+    //value es la cadena obtenida del input pero solo nos interesa la ultima tecla pulsada
+    if(value.length>0)
+      value=value.substring(value.length-1);
     const block = new Block(this._frameId)
     let code = this._options.keyDownCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector).replace(/\${value}/g, value)
     block.addLine({ type: domEvents.KEYDOWN, value: code })

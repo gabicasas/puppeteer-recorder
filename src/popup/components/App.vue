@@ -21,6 +21,7 @@
       </div>
     </div>
     <div class="main">
+       <b-form @submit.stop.prevent="executeCode">
       <div class="tabs" v-show="!showHelp">
         <RecordingTab
           :code="code"
@@ -51,11 +52,18 @@
         />
         <div class="results-footer" v-show="showResultsTab">
           <button class="btn btn-sm btn-primary" @click="restart" v-show="code">Restart</button>
+          <b-form-input 
+          v-model="filename"
+          
+          ></b-form-input>
+         
+          <b-button variant="primary" @click="executeCode" v-show="code">Ejecutar codigo</b-button>
           <a href="#" v-clipboard:copy="code" @click="setCopying" v-show="code">{{copyLinkText}}</a>
          
          
         </div>
       </div>
+       </b-form>
       <HelpTab v-show="showHelp"></HelpTab>
     </div>
   </div>
@@ -72,9 +80,11 @@ import EventBus from '../index.js';
 
 
 
+
 export default {
   name: "App",
   components: { ResultsTab, RecordingTab, HelpTab },
+  
   data() {
     return {
       code: "",
@@ -86,9 +96,11 @@ export default {
       isPaused: false,
       isCopying: false,
       bus: null,
+      filename:"",
       version
     };
   },
+ 
   mounted() {
 
  EventBus.$on('reloadLiveEvents',  (message) => {
@@ -117,6 +129,7 @@ export default {
        this.liveEvents[message.data.index]=message.data.event;
        //TODO: chapuza, solucionar esto del fallo de tener q añadir pq vue no se entera
       this.liveEvents.push(message.data.event)
+      this.liveEvents.splice(this.liveEvents.length-1,1);
      
     })  
 
@@ -171,8 +184,8 @@ export default {
         
           console.log(this.liveEvents);
           console.log(this.recording);
-           this.code = codeGen.generate(this.recording)
-          //this.code = codeGen.generate(this.liveEvents);
+          // this.code = codeGen.generate(this.recording)
+          this.code = codeGen.generate(this.liveEvents);
           this.showResultsTab = true;
           this.storeState();
         }
@@ -188,6 +201,23 @@ export default {
       this.code = "";
       this.showResultsTab = this.isRecording = this.isPaused = false;
       this.storeState();
+    },
+    executeCode(){
+       
+      this.$http.post('http://localhost:8124',{
+                   filename: 'gabi.js',
+                   functionName: 'gabi',
+                   code: this.code
+                }).then(response => {
+
+    console.debug(response);
+                    alert(response.data);
+  }, error => {
+     alert("Falla la peticion");
+                    console.debug(error);
+
+  });
+    
     },
     openOptions() {
       if (this.$chrome.runtime.openOptionsPage) {
