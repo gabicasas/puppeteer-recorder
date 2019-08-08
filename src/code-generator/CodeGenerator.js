@@ -13,7 +13,7 @@ const wrappedHeader = `(async () => {
   const browser = await puppeteer.launch(PUPPETEER_OPTS)
   const page = await browser.newPage()\n`
 
-const wrappedFooter = `  await browser.close()
+const wrappedFooter = `  
 })()`
 
 const varData="${varData}"
@@ -51,13 +51,16 @@ export const defaults = {
     return obj.innerHTML
     });`,
   readWaitDinamicDataCode: `await ${frame}.waitForSelector("${selector}")
-  globalVar.${varData}=await ${frame}.evaluate(element => { 
+  page.exposeFunction('${varData}_puppeteerMutationListener', function(value){globalVar.${varData}=value});
+  await ${frame}.evaluate(element => { 
     let observer = new MutationObserver(
     function() {
+      let value=null;
       let obj= document.querySelector("${selector}");
-      if(obj.options) return obj.options[obj.selectedIndex].innerHTML
-      if(obj.value) return obj.value
-      return obj.innerHTML
+      if(obj.options) value = obj.options[obj.selectedIndex].innerHTML
+      if(obj.value) value = obj.value
+      value = obj.innerHTML
+      ${varData}_puppeteerMutationListener(value)
      }
     )
     let config = {
@@ -89,9 +92,14 @@ export default class CodeGenerator {
     return this.hasOwnProperty('_userOptions') ? this._userOptions : void 0
   }
   static set userOptions(v) { this._userOptions = v }
-
-  generate(events) {
-    return importPuppeteer + this._getHeader() + this._parseEvents(events) + this._getFooter()
+  /**
+   * 
+   * @param {*} events Lista de eventos para genera código
+   * @param {boolean} keepAlive Indica si se cerrará el navegador al final o queda abierto
+   * 
+   */
+  generate(events, keepAlive) {
+    return importPuppeteer + this._getHeader() + this._parseEvents(events) + this._getFooter(keepAlive)
   }
 
   _getHeader() {
@@ -101,8 +109,15 @@ export default class CodeGenerator {
     return hdr
   }
 
-  _getFooter() {
-    return this._options.wrapAsync ? wrappedFooter : footer
+  _getFooter(keepAlive) {
+    let code= ''
+    if(!keepAlive)
+      code=footer
+    if(this._options.wrapAsync)
+      code+=wrappedFooter;
+    
+    return code
+    
   }
 
   _parseEvents(events) {

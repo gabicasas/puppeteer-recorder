@@ -7,6 +7,7 @@
           <small>{{version}} PFC</small>
         </span>
       </a>
+      <input type="checkbox" v-model="keepAlive" />
       <div class="left">
         <div class="recording-badge" v-show="isRecording">
           <span class="red-dot"></span>
@@ -97,6 +98,7 @@ export default {
       isCopying: false,
       bus: null,
       filename:"",
+      keepAlive:false,
       version
     };
   },
@@ -185,7 +187,7 @@ export default {
           console.log(this.liveEvents);
           console.log(this.recording);
           // this.code = codeGen.generate(this.recording)
-          this.code = codeGen.generate(this.liveEvents);
+          this.code = codeGen.generate(this.liveEvents,this.keepAlive);
           this.showResultsTab = true;
           this.storeState();
         }
