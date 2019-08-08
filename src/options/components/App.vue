@@ -125,6 +125,7 @@
                         placeholder="add multiple lines"
                       ></b-form-textarea>
                     </b-form-group>
+                    <b-button @click="options.code.waitClickCode=defaultCode.code.waitClickCode;save()">Reset</b-button>
                   </div>
                 </b-tab>
 
@@ -142,6 +143,7 @@
                         placeholder="add multiple lines"
                       ></b-form-textarea>
                     </b-form-group>
+                      <b-button @click="options.code.keyDownCode=defaultCode.code.keyDownCode;save()">Reset</b-button>
                   </div>
                 </b-tab>
 
@@ -158,7 +160,9 @@
                         @change="save"
                         placeholder="add multiple lines"
                       ></b-form-textarea>
+                       
                     </b-form-group>
+                    <b-button @click="options.code.changeCode=defaultCode.code.changeCode;save()">Reset</b-button>
                   </div>
                 </b-tab>
 
@@ -176,6 +180,7 @@
                         placeholder="add multiple lines"
                       ></b-form-textarea>
                     </b-form-group>
+                    <b-button @click="options.code.goToCode=defaultCode.code.goToCode;save()">Reset</b-button>
                   </div>
                 </b-tab>
 
@@ -193,6 +198,7 @@
                         placeholder="add multiple lines"
                       ></b-form-textarea>
                     </b-form-group>
+                    <b-button @click="options.code.viewportCode=defaultCode.code.viewportCode;save()">Reset</b-button>
                   </div>
                 </b-tab>
 
@@ -210,7 +216,8 @@
                         placeholder="add multiple lines"
                       ></b-form-textarea>
                     </b-form-group>
-                    <b-button>Reset</b-button>
+                    <b-button @click="options.code.readDataCode=defaultCode.code.readDataCode;save()">Reset</b-button>
+                    
                   
                     <b-form-group
                       label="Dinamic Variables disponibles: {frame}"
@@ -223,7 +230,7 @@
                         placeholder="add multiple lines"
                       ></b-form-textarea>
                     </b-form-group>
-
+                    <b-button @click="options.code.readDinamicDataCode=defaultCode.code.readDinamicDataCode;save()">Reset</b-button>
                       <b-form-group
                       label="Wait Variables disponibles: {frame}"
                       label-for="options-code-readWaitData"
@@ -235,7 +242,7 @@
                         placeholder="add multiple lines"
                       ></b-form-textarea>
                     </b-form-group>
-
+                      <b-button @click="options.code.readWaitDataCode=defaultCode.code.readWaitDataCode;save()">Reset</b-button>
                     <b-form-group
                       label="Wait Dinamic Variables disponibles: {frame}"
                       label-for="options-code-readDinamicWaitData"
@@ -247,7 +254,7 @@
                         placeholder="add multiple lines"
                       ></b-form-textarea>
                     </b-form-group>
-
+                    <b-button @click="options.code.readWaitDinamicDataCode=defaultCode.code.readWaitDinamicDataCode;save()">Reset</b-button>
 
                   </div>
                 </b-tab>
@@ -261,7 +268,7 @@
         </b-tabs>
       </div>
       <div class="footer">
-        <b-button @click="openApp">Open</b-button>
+       
       </div>
     </div>
   </div>

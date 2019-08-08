@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="main">
-       <b-form @submit.stop.prevent="executeCode">
+       <b-form @submit.stop.prevent="">
       <div class="tabs" v-show="!showHelp">
         <RecordingTab
           :code="code"

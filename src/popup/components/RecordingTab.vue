@@ -14,6 +14,7 @@
               Dinamic Data <input type="checkbox" v-model="event.dinamicData" @change="recordEvent"/>
               <input type="text" v-model="event.varData" @change="recordEvent"/>
               <button @click="changeSelector(event,index)">Cambiar selector</button>
+              <span>{{viewEventValue(event)}}</span>
             </div>  
             <div class="event-label">
               {{index + 1}}.
@@ -41,6 +42,9 @@ import EventBus from '../index.js';
     methods: {
       changeSelector(event,index){
         this.$chrome.devtools.inspectedWindow.eval("eventRecorder.changeDevToolsSelector($0,"+JSON.stringify(event)+","+index+")", { useContentScriptContext: true })
+      },
+      viewEventValue(event){
+          return ''
       },
 
       parseEventValue (event) {

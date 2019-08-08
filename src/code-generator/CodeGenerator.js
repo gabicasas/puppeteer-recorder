@@ -16,6 +16,9 @@ const wrappedHeader = `(async () => {
 const wrappedFooter = `  await browser.close()
 })()`
 
+const varData="${varData}"
+const selector="${selector}"
+const frame="${frame}"
 
 export const defaults = {
   wrapAsync: true,
@@ -32,16 +35,40 @@ export const defaults = {
   goToCode: 'await ${frame}.goto("${href}")',
   viewportCode: 'await ${frame}.setViewport({ width: ${width}, height: ${height} })',
   readDataCode: 
-   'globalVar.${varData}=await ${frame}.evaluate(element => {\n'
-  +'  return document.querySelector("${selector}").innerHTML\n'
-    +'});\n',
+    `globalVar.${varData}=await ${frame}.evaluate(element => {
+      let obj= document.querySelector("${selector}");
+      if(obj.options) return obj.options[obj.selectedIndex].innerHTML
+      if(obj.value) return obj.value
+      return obj.innerHTML
+      });`,
   readDinamicDataCode: 'readDinamicDataCode',
   readWaitDataCode: 
-  'await ${frame}.waitForSelector("${selector}")\n'
-  +'globalVar.${varData}=await ${frame}.evaluate(element => {\n'
-  +'  return document.querySelector("${selector}").innerHTML\n'
-    +'});\n',
-  readWaitDinamicDataCode: 'readWaitDinamicDataCode'
+  `await ${frame}.waitForSelector("${selector}")
+  globalVar.${varData}=await ${frame}.evaluate(element => {
+    let obj= document.querySelector("${selector}");
+    if(obj.options) return obj.options[obj.selectedIndex].innerHTML
+    if(obj.value) return obj.value
+    return obj.innerHTML
+    });`,
+  readWaitDinamicDataCode: `await ${frame}.waitForSelector("${selector}")
+  globalVar.${varData}=await ${frame}.evaluate(element => { 
+    let observer = new MutationObserver(
+    function() {
+      let obj= document.querySelector("${selector}");
+      if(obj.options) return obj.options[obj.selectedIndex].innerHTML
+      if(obj.value) return obj.value
+      return obj.innerHTML
+     }
+    )
+    let config = {
+      attributes: true,
+      childList: true,
+      characterData: true,
+      subtree: true
+    }
+    let obj= document.querySelector("${selector}");
+    observer.observe(obj, config)
+  });`
 
   // }
 }
