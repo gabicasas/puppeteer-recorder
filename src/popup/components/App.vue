@@ -8,6 +8,7 @@
         </span>
       </a>
       <input type="checkbox" v-model="keepAlive" />
+      Nombre de la función <input type="text" v-model="functionName" />
       <div class="left">
         <div class="recording-badge" v-show="isRecording">
           <span class="red-dot"></span>
@@ -98,6 +99,7 @@ export default {
       isCopying: false,
       bus: null,
       filename:"",
+      functionName:"",
       keepAlive:false,
       version
     };
@@ -187,7 +189,7 @@ export default {
           console.log(this.liveEvents);
           console.log(this.recording);
           // this.code = codeGen.generate(this.recording)
-          this.code = codeGen.generate(this.liveEvents,this.keepAlive);
+          this.code = codeGen.generate(this.liveEvents,{keepAlive:this.keepAlive,functionName:this.functionName});
           this.showResultsTab = true;
           this.storeState();
         }

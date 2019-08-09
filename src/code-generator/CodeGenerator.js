@@ -19,6 +19,7 @@ const wrappedFooter = `
 const varData="${varData}"
 const selector="${selector}"
 const frame="${frame}"
+const functionName="${functionName}"
 
 export const defaults = {
   wrapAsync: true,
@@ -28,50 +29,63 @@ export const defaults = {
   blankLinesBetweenBlocks: true,
   dataAttribute: '',
   // code: {
-  clickCode: 'await ${frame}.click("${selector}");',
-  waitClickCode: 'await ${frame}.waitForSelector("${selector}");\n await ${frame}.click("${selector}");',
-  keyDownCode: 'await ${frame}.type("${selector}", "${value}")',
-  changeCode: 'await ${frame}.select("${selector}", "${value}")',
-  goToCode: 'await ${frame}.goto("${href}")',
-  viewportCode: 'await ${frame}.setViewport({ width: ${width}, height: ${height} })',
+  dontKeepAliveCode:  `await browser.close()`, 
+  footerCode:  `}`,
+  wrapperFooterCode: `  
+  })()}`,   
+  headerCode:  `function ${functionName}(globalVar, eventEmitter){
+  const puppeteer = require('puppeteer');
+  const browser = await puppeteer.launch(PUPPETEER_OPTS)
+  const page = await browser.newPage()`, 
+  wrapperHeaderCode:  `function ${functionName}(globalVar, eventEmitter){
+  (async () => {
+    const puppeteer = require('puppeteer');
+    const browser = await puppeteer.launch(PUPPETEER_OPTS)
+    const page = await browser.newPage()`, 
+  clickCode: '  await ${frame}.click("${selector}");',
+  waitClickCode: '  await ${frame}.waitForSelector("${selector}");\n await ${frame}.click("${selector}");',
+  keyDownCode: '  await ${frame}.type("${selector}", "${value}")',
+  changeCode: ' await ${frame}.select("${selector}", "${value}")',
+  goToCode: ' await ${frame}.goto("${href}")',
+  viewportCode: ' await ${frame}.setViewport({ width: ${width}, height: ${height} })',
   readDataCode: 
-    `globalVar.${varData}=await ${frame}.evaluate(element => {
+    ` globalVar.${varData}=await ${frame}.evaluate(element => {
+        let obj= document.querySelector("${selector}");
+        if(obj.options) return obj.options[obj.selectedIndex].innerHTML
+        if(obj.value) return obj.value
+        return obj.innerHTML
+        });`,
+  readDinamicDataCode: 'readDinamicDataCode',
+  readWaitDataCode: 
+  ` await ${frame}.waitForSelector("${selector}")
+    globalVar.${varData}=await ${frame}.evaluate(element => {
       let obj= document.querySelector("${selector}");
       if(obj.options) return obj.options[obj.selectedIndex].innerHTML
       if(obj.value) return obj.value
       return obj.innerHTML
       });`,
-  readDinamicDataCode: 'readDinamicDataCode',
-  readWaitDataCode: 
-  `await ${frame}.waitForSelector("${selector}")
-  globalVar.${varData}=await ${frame}.evaluate(element => {
-    let obj= document.querySelector("${selector}");
-    if(obj.options) return obj.options[obj.selectedIndex].innerHTML
-    if(obj.value) return obj.value
-    return obj.innerHTML
-    });`,
-  readWaitDinamicDataCode: `await ${frame}.waitForSelector("${selector}")
-  page.exposeFunction('${varData}_puppeteerMutationListener', function(value){globalVar.${varData}=value});
-  await ${frame}.evaluate(element => { 
-    let observer = new MutationObserver(
-    function() {
-      let value=null;
+  readWaitDinamicDataCode: `  await ${frame}.waitForSelector("${selector}")
+    page.exposeFunction('${varData}_puppeteerMutationListener', function(value){globalVar.${varData}=value});
+    await ${frame}.evaluate(element => { 
+      let observer = new MutationObserver(
+      function() {
+        let value=null;
+        let obj= document.querySelector("${selector}");
+        if(obj.options) value = obj.options[obj.selectedIndex].innerHTML
+        if(obj.value) value = obj.value
+        value = obj.innerHTML
+        ${varData}_puppeteerMutationListener(value)
+      }
+      )
+      let config = {
+        attributes: true,
+        childList: true,
+        characterData: true,
+        subtree: true
+      }
       let obj= document.querySelector("${selector}");
-      if(obj.options) value = obj.options[obj.selectedIndex].innerHTML
-      if(obj.value) value = obj.value
-      value = obj.innerHTML
-      ${varData}_puppeteerMutationListener(value)
-     }
-    )
-    let config = {
-      attributes: true,
-      childList: true,
-      characterData: true,
-      subtree: true
-    }
-    let obj= document.querySelector("${selector}");
-    observer.observe(obj, config)
-  });`
+      observer.observe(obj, config)
+    });`
 
   // }
 }
@@ -95,27 +109,31 @@ export default class CodeGenerator {
   /**
    * 
    * @param {*} events Lista de eventos para genera código
-   * @param {boolean} keepAlive Indica si se cerrará el navegador al final o queda abierto
+   * @param {*} params {functionName: Nombre del metodo a generar, keepAlive: Indica si se cerrará el navegador al final o queda abierto}
    * 
    */
-  generate(events, keepAlive) {
-    return importPuppeteer + this._getHeader() + this._parseEvents(events) + this._getFooter(keepAlive)
+  generate(events, params) {
+    return  this._getHeader(params.functionName) + this._parseEvents(events) + this._getFooter(params.keepAlive)
   }
 
-  _getHeader() {
+  _getHeader(functionName) {
     console.debug(this._options)
-    let hdr = this._options.wrapAsync ? wrappedHeader : header
-    hdr = this._options.headless ? hdr : hdr.replace('launch()', 'launch({ headless: false })')
-    return hdr
+   // let hdr = this._options.wrapAsync ? wrappedHeader : header
+   // hdr = this._options.headless ? hdr : hdr.replace('launch()', 'launch({ headless: false })')
+
+   if (this._options.wrapAsync)
+    return this._options.wrapperHeaderCode.replace(/\${functionName}/g, functionName)
+  return this._options.headerCode.replace(/\${functionName}/g, functionName)
   }
 
   _getFooter(keepAlive) {
     let code= ''
     if(!keepAlive)
-      code=footer
+      code=this._options.dontKeepAliveCode;
     if(this._options.wrapAsync)
-      code+=wrappedFooter;
-    
+      code+=this._options.wrapperFooterCode;
+    else  
+    code+=this._options.footerCode;
     return code
     
   }

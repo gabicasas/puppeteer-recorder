@@ -99,6 +99,92 @@
           <b-tab title="Generador" active>
             <b-form>
               <b-tabs pills card vertical>
+                <b-tab title="Cabecera y pie" active>
+                  <b-card-text>Define el código de la cabecera e inicio de función</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                      label="Variables disponibles: {functionName}"
+                      label-for="options-code-header"
+                    >
+                      <b-form-textarea
+                        id="options-code-header"
+                        v-model="options.code.headerCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                  
+                    <b-button @click="options.code.headerCode=defaultCode.code.headerCode;save()">Reset</b-button>
+                  </div>
+
+                   <b-card-text>Define el código de la cabecera e inicio de función par cuerpos asincronos</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                      label="Variables disponibles: {functionName}"
+                      label-for="options-code-wheader"
+                    >
+                      <b-form-textarea
+                        id="options-code-wheader"
+                        v-model="options.code.wrapperHeaderCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                  
+                    <b-button @click="options.code.wrapperHeaderCode=defaultCode.code.wrapperHeaderCode;save()">Reset</b-button>
+                  </div>
+
+                  <b-card-text>Define el código de fin de función</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                     
+                    >
+                      <b-form-textarea
+                       
+                        v-model="options.code.footerCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                  
+                    <b-button @click="options.code.footerCode=defaultCode.code.footerCode;save()">Reset</b-button>
+                  </div>
+
+                  <b-card-text>Define el código de fin de función asincrona</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                     
+                    >
+                      <b-form-textarea
+                       
+                        v-model="options.code.wrapperFooterCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                  
+                    <b-button @click="options.code.wrapperFooterCode=defaultCode.code.wrapperFooterCode;save()">Reset</b-button>
+                  </div>
+
+ <b-card-text>Define el código para cerrar el browser al final de la función si no hay lectura continua de datos (en función de si se setea keepAlive)</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                     
+                    >
+                      <b-form-textarea
+                       
+                        v-model="options.code.dontKeepAliveCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                  
+                    <b-button @click="options.code.dontKeepAliveCode=defaultCode.code.dontKeepAliveCode;save()">Reset</b-button>
+                  </div>
+
+
+                </b-tab>
+
                 <b-tab title="onClick" active>
                   <b-card-text>Define el codigo que quiere que sea generado para simular un click de raton</b-card-text>
                   <div class="settings-group">
