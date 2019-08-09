@@ -55,7 +55,33 @@ export const defaults = {
         if(obj.value) return obj.value
         return obj.innerHTML
         });`,
-  readDinamicDataCode: 'readDinamicDataCode',
+  readDinamicDataCode: ` page.exposeFunction('${varData}_puppeteerMutationListener', function(value){
+    for(let i in value){
+      globalVar[i]=value[i];
+    }
+     console.log(globalVar);
+     eventEmitter.emit('changeData',value);
+  });
+  await ${frame}.evaluate(element => { 
+    let observer = new MutationObserver(
+    function() {
+      let value=null;
+      let obj= document.querySelector("${selector}");
+      if(obj.options) value = obj.options[obj.selectedIndex].innerHTML
+      if(obj.value) value = obj.value
+      value = obj.innerHTML
+      ${varData}_puppeteerMutationListener(value)
+    }
+    )
+    let config = {
+      attributes: true,
+      childList: true,
+      characterData: true,
+      subtree: true
+    }
+    let obj= document.querySelector("${selector}");
+    observer.observe(obj, config)
+  });`,
   readWaitDataCode: 
   ` await ${frame}.waitForSelector("${selector}")
     globalVar.${varData}=await ${frame}.evaluate(element => {
@@ -65,7 +91,13 @@ export const defaults = {
       return obj.innerHTML
       });`,
   readWaitDinamicDataCode: `  await ${frame}.waitForSelector("${selector}")
-    page.exposeFunction('${varData}_puppeteerMutationListener', function(value){globalVar.${varData}=value});
+    page.exposeFunction('${varData}_puppeteerMutationListener', function(value){
+      for(let i in value){
+        globalVar[i]=value[i];
+      }
+       console.log(globalVar);
+       eventEmitter.emit('changeData',value);
+    });
     await ${frame}.evaluate(element => { 
       let observer = new MutationObserver(
       function() {
