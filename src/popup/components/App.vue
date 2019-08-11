@@ -7,16 +7,31 @@
           <small>{{version}} PFC</small>
         </span>
       </a>
-      <input type="checkbox" v-model="keepAlive" />
-      Nombre de la función <input type="text" v-model="functionName" />
+       <b-input-group>
+         <b-form-group
+                      label="Nombre de la función"
+                      label-for="functionNameId"
+                    >
+      <b-form-input v-model="functionName" id="functionNameId" />
+      </b-form-group>
+       <!-- <b-input-group-prepend is-text> -->
+          <b-form-group
+                      label="keepAlive"
+                      label-for="keepAliveId"
+                    >
+          <input type="checkbox" v-model="keepAlive" id="keepAliveId"/>
+          </b-form-group>
+        <!-- </b-input-group-prepend> -->
+        
+      </b-input-group>
       <div class="left">
         <div class="recording-badge" v-show="isRecording">
           <span class="red-dot"></span>
           {{recordingBadgeText}}
         </div>
-        <a href="#" @click="toggleShowHelp" class="header-button">
+       <!-- <a href="#" @click="toggleShowHelp" class="header-button">
           <img src="/images/help.svg" alt="help" width="18px" />
-        </a>
+        </a> -->
         <a href="#" @click="openOptions" class="header-button">
           <img src="/images/settings.svg" alt="settings" width="18px" />
         </a>
@@ -54,10 +69,7 @@
         />
         <div class="results-footer" v-show="showResultsTab">
           <button class="btn btn-sm btn-primary" @click="restart" v-show="code">Restart</button>
-          <b-form-input 
-          v-model="filename"
-          
-          ></b-form-input>
+         
          
           <b-button variant="primary" @click="executeCode" v-show="code">Ejecutar codigo</b-button>
           <a href="#" v-clipboard:copy="code" @click="setCopying" v-show="code">{{copyLinkText}}</a>
@@ -209,8 +221,8 @@ export default {
     executeCode(){
        
       this.$http.post('http://localhost:8124',{
-                   filename: 'gabi.js',
-                   functionName: 'gabi',
+                   filename: `${this.functionName}.js`,
+                   functionName: this.functionName,
                    code: this.code
                 }).then(response => {
 

@@ -219,7 +219,7 @@
                   <b-card-text>Define el codigo que quiere que sea generado para simular una pulsacion de tecla</b-card-text>
                   <div class="settings-group">
                     <b-form-group
-                      label="Variables disponibles: {frame},{selector},{value}"
+                      label="Variables disponibles: {frame},{selector},{value},{keyCode}"
                       label-for="options-code-onKeyDown"
                     >
                       <b-form-textarea
@@ -230,6 +230,24 @@
                       ></b-form-textarea>
                     </b-form-group>
                       <b-button @click="options.code.keyDownCode=defaultCode.code.keyDownCode;save()">Reset</b-button>
+                  </div>
+                </b-tab>
+
+                <b-tab title="onKeyUp" active>
+                  <b-card-text>Define el codigo que quiere que sea generado para simular cuando se suelta una tecla</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                      label="Variables disponibles: {frame},{selector},{value},{keyCode}"
+                      label-for="options-code-onKeyUp"
+                    >
+                      <b-form-textarea
+                        id="options-code-onKeyUp"
+                        v-model="options.code.keyUpCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                      <b-button @click="options.code.keyUpCode=defaultCode.code.keyUpCode;save()">Reset</b-button>
                   </div>
                 </b-tab>
 
@@ -432,7 +450,7 @@ export default {
 
   .container {
     padding: 0 2 * $spacer;
-    width: 550px;
+   /* width: 550px; */
     margin: 0 auto;
 
     .content {

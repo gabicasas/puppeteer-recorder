@@ -103,6 +103,8 @@ class EventRecorder {
   }
 
   recordEvent (e) {
+   /* if(e.type==="keydown")
+    debugger */
     console.log('Evento grabado')
     console.log(e)
     if (this.previousEvent && this.previousEvent.timeStamp === e.timeStamp) return

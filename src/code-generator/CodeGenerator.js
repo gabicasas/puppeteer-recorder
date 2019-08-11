@@ -35,16 +35,19 @@ export const defaults = {
   })()}`,   
   headerCode:  `function ${functionName}(globalVar, eventEmitter){
   const puppeteer = require('puppeteer');
+  const keyboardMapping = require('./USKeyboardLayout.js');
   const browser = await puppeteer.launch(PUPPETEER_OPTS)
   const page = await browser.newPage()`, 
   wrapperHeaderCode:  `function ${functionName}(globalVar, eventEmitter){
   (async () => {
     const puppeteer = require('puppeteer');
+    const keyboardMapping = require('./USKeyboardLayout.js');
     const browser = await puppeteer.launch(PUPPETEER_OPTS)
     const page = await browser.newPage()`, 
   clickCode: '  await ${frame}.click("${selector}");',
   waitClickCode: '  await ${frame}.waitForSelector("${selector}");\n await ${frame}.click("${selector}");',
-  keyDownCode: '  await ${frame}.type("${selector}", "${value}")',
+  keyDownCode: '  await ${frame}.keyboard.down(keyboardMapping.keyCodeLayout[${keyCode}].code)',
+  keyUpCode: '  await ${frame}.keyboard.up(keyboardMapping.keyCodeLayout[${keyCode}].code)',
   changeCode: ' await ${frame}.select("${selector}", "${value}")',
   goToCode: ' await ${frame}.goto("${href}")',
   viewportCode: ' await ${frame}.setViewport({ width: ${width}, height: ${height} })',
@@ -149,6 +152,7 @@ export default class CodeGenerator {
   }
 
   _getHeader(functionName) {
+   
     console.debug(this._options)
    // let hdr = this._options.wrapAsync ? wrappedHeader : header
    // hdr = this._options.headless ? hdr : hdr.replace('launch()', 'launch({ headless: false })')
@@ -201,6 +205,14 @@ export default class CodeGenerator {
             this._blocks.push(this._handleReadData(selector, dinamicData, varData))
           }
           break
+          case 'keyup':
+            // if (keyCode === 9) { // tab key
+            //   this._blocks.push(this._handleKeyDown(selector, value, keyCode))
+            // }
+            if (keyCode !== 113) { // F2
+              this._blocks.push(this._handleKeyUp(selector, value, keyCode))
+            } 
+            break  
         case 'click':
           this._blocks.push(this._handleClick(selector, dinamicData, events))
           break
@@ -266,13 +278,21 @@ export default class CodeGenerator {
     }
   }
 
-  _handleKeyDown(selector, value) {
+  _handleKeyDown(selector, value,keyCode) {
     //value es la cadena obtenida del input pero solo nos interesa la ultima tecla pulsada
-    if(value.length>0)
-      value=value.substring(value.length-1);
+   
     const block = new Block(this._frameId)
-    let code = this._options.keyDownCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector).replace(/\${value}/g, value)
+    let code = this._options.keyDownCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector).replace(/\${value}/g, value).replace(/\${keyCode}/g, keyCode)
     block.addLine({ type: domEvents.KEYDOWN, value: code })
+    return block
+  }
+
+  _handleKeyUp(selector, value,keyCode) {
+    //value es la cadena obtenida del input pero solo nos interesa la ultima tecla pulsada
+   
+    const block = new Block(this._frameId)
+    let code = this._options.keyUpCode.replace(/\${frame}/g, this._frame).replace(/\${selector}/g, selector).replace(/\${value}/g, value).replace(/\${keyCode}/g, keyCode)
+    block.addLine({ type: domEvents.KEYUP, value: code })
     return block
   }
 
