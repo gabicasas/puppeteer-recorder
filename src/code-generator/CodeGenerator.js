@@ -30,9 +30,17 @@ export const defaults = {
   dataAttribute: '',
   // code: {
   dontKeepAliveCode:  `await browser.close()`, 
-  footerCode:  `}`,
+  footerCode:  `}
+  
+  module.exports ={
+    ${functionName}: ${functionName}
+  }`,
   wrapperFooterCode: `  
-  })()}`,   
+  })()}
+  
+  module.exports ={
+    ${functionName}: ${functionName}
+  }`,   
   headerCode:  `function ${functionName}(globalVar, eventEmitter){
   const puppeteer = require('puppeteer');
   const keyboardMapping = require('./USKeyboardLayout.js');
@@ -40,9 +48,10 @@ export const defaults = {
   const page = await browser.newPage()`, 
   wrapperHeaderCode:  `function ${functionName}(globalVar, eventEmitter){
   (async () => {
+    const constants=require('./constants.js')
     const puppeteer = require('puppeteer');
     const keyboardMapping = require('./USKeyboardLayout.js');
-    const browser = await puppeteer.launch(PUPPETEER_OPTS)
+    const browser = await puppeteer.launch(constants.PUPPETEER_OPTS)
     const page = await browser.newPage()`, 
   clickCode: '  await ${frame}.click("${selector}");',
   waitClickCode: '  await ${frame}.waitForSelector("${selector}");\n await ${frame}.click("${selector}");',
@@ -148,7 +157,7 @@ export default class CodeGenerator {
    * 
    */
   generate(events, params) {
-    return  this._getHeader(params.functionName) + this._parseEvents(events) + this._getFooter(params.keepAlive)
+    return  this._getHeader(params.functionName) + this._parseEvents(events) + this._getFooter(params.keepAlive,params.functionName)
   }
 
   _getHeader(functionName) {
@@ -162,14 +171,14 @@ export default class CodeGenerator {
   return this._options.headerCode.replace(/\${functionName}/g, functionName)
   }
 
-  _getFooter(keepAlive) {
+  _getFooter(keepAlive,functionName) {
     let code= ''
     if(!keepAlive)
       code=this._options.dontKeepAliveCode;
     if(this._options.wrapAsync)
-      code+=this._options.wrapperFooterCode;
+      code+=this._options.wrapperFooterCode.replace(/\${functionName}/g, functionName);
     else  
-    code+=this._options.footerCode;
+    code+=this._options.footerCode.replace(/\${functionName}/g, functionName);
     return code
     
   }

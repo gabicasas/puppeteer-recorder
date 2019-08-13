@@ -3,8 +3,8 @@
       <div class="content">
       <div class="empty" v-show="!isRecording">
         <img src="/images/puppeteer.png" alt="desert" width="78px">
-        <h3>No recorded events yet</h3>
-        <p class="text-muted">Click record to begin</p>
+        <h3>Aún no hay eventos grabados</h3>
+        <p class="text-muted">Pulsa "Grabar" para empezar</p>
       </div>
       <div class="events" v-show="isRecording">
         <p class="text-muted text-center loading" v-show="liveEvents.length === 0">Waiting for events</p>

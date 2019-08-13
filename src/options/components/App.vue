@@ -137,13 +137,15 @@
                   <b-card-text>Define el código de fin de función</b-card-text>
                   <div class="settings-group">
                     <b-form-group
-                     
+                      label="Variables disponibles: {functionName}"
+                      label-for="options-code-footer"
                     >
                       <b-form-textarea
                        
                         v-model="options.code.footerCode"
                         @change="save"
                         placeholder="add multiple lines"
+                        id="options-code-footer"
                       ></b-form-textarea>
                     </b-form-group>
                   
@@ -153,13 +155,15 @@
                   <b-card-text>Define el código de fin de función asincrona</b-card-text>
                   <div class="settings-group">
                     <b-form-group
-                     
+                     label="Variables disponibles: {functionName}"
+                      label-for="options-code-wfooter"
                     >
                       <b-form-textarea
                        
                         v-model="options.code.wrapperFooterCode"
                         @change="save"
                         placeholder="add multiple lines"
+                        id="options-code-wfooter"
                       ></b-form-textarea>
                     </b-form-group>
                   

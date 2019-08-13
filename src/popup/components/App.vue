@@ -303,13 +303,13 @@ export default {
   },
   computed: {
     recordingBadgeText() {
-      return this.isPaused ? "paused" : "recording";
+      return this.isPaused ? "pausado" : "grabando...";
     },
     recordButtonText() {
-      return this.isRecording ? "Stop" : "Record";
+      return this.isRecording ? "Stop" : "Grabar";
     },
     pauseButtonText() {
-      return this.isPaused ? "Resume" : "Pause";
+      return this.isPaused ? "Continuar" : "Pausar";
     },
     copyLinkText() {
       return this.isCopying ? "copied!" : "copy to clipboard";
