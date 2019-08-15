@@ -68,7 +68,7 @@
           v-show="showResultsTab"
         />
         <div class="results-footer" v-show="showResultsTab">
-          <button class="btn btn-sm btn-primary" @click="restart" v-show="code">Restart</button>
+          <button class="btn btn-sm btn-primary" @click="restart" v-show="code">Reiniciar</button>
          
          
           <b-button variant="primary" @click="executeCode" v-show="code">Ejecutar codigo</b-button>
@@ -312,7 +312,7 @@ export default {
       return this.isPaused ? "Continuar" : "Pausar";
     },
     copyLinkText() {
-      return this.isCopying ? "copied!" : "copy to clipboard";
+      return this.isCopying ? "¡Copiado!" : "Copiar al portapapeles";
     }
   }
 };
