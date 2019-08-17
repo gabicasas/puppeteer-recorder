@@ -384,6 +384,31 @@
                   </div>
                 </b-tab>
 
+                <b-tab title="Wait Navigation" active>
+                  <b-card-text>Define el codigo necesario para esperar la carga de una nueva pagina</b-card-text>
+                  <div class="settings-group">
+                    <b-form-group
+                     
+                    >
+                      <b-form-textarea
+                       
+                        v-model="options.code.handleWaitNavigationCode"
+                        @change="save"
+                        placeholder="add multiple lines"
+                      ></b-form-textarea>
+                    </b-form-group>
+                    <b-button @click="options.code.handleWaitNavigationCode=defaultCode.code.handleWaitNavigationCode;save()">Reset</b-button>
+                  </div>
+                </b-tab>
+
+
+
+
+
+
+
+
+
                 
 
                

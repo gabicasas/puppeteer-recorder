@@ -30,6 +30,7 @@ export const defaults = {
   blankLinesBetweenBlocks: true,
   dataAttribute: '',
   // code: {
+  handleWaitNavigationCode:  `await navigationPromise`,  
   dontKeepAliveCode:  `await browser.close()`, 
   footerCode:  `}
   
@@ -42,10 +43,11 @@ export const defaults = {
   module.exports ={
     ${functionName}: ${functionName}
   }`,   
-  headerCode:  `function ${functionName}(globalVar, eventEmitter){
-  const puppeteer = require('puppeteer');
+  headerCode:  `async function ${functionName}(globalVar, eventEmitter){
+  const constants=require('./constants.js')
+   const puppeteer = require('puppeteer');
   const keyboardMapping = require('./USKeyboardLayout.js');
-  const browser = await puppeteer.launch(PUPPETEER_OPTS)
+  const browser = await puppeteer.launch(constants.PUPPETEER_OPTS)
   const page = await browser.newPage()`, 
   wrapperHeaderCode:  `function ${functionName}(globalVar, eventEmitter){
   (async () => {
@@ -343,7 +345,8 @@ export default class CodeGenerator {
   _handleWaitForNavigation() {
     const block = new Block(this._frameId)
     if (this._options.waitForNavigation) {
-      block.addLine({ type: pptrActions.NAVIGATION, value: `await navigationPromise` })
+
+      block.addLine({ type: pptrActions.NAVIGATION, value: this._options.handleWaitNavigationCode })
     }
     return block
   }
