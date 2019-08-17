@@ -12,6 +12,23 @@
               <h4 class="settings-block-title">Code Recorder settings</h4>
               <div class="settings-block-main">
                 <div class="settings-group">
+                  <label class="settings-label">URL del Sanbox</label>
+                  <input
+                    id="options-code-dataAttribute"
+                    type="text"
+                    v-model="options.code.sandboxUrl"
+                    @change="save"
+                    placeholder="your custom data-* attribute"
+                  />
+                  <small>
+                    Define el endpoint donde está escuchando el sandbox al que enviaremose código a ejecutar
+                  </small>
+                </div>
+
+
+
+
+                <div class="settings-group">
                   <label class="settings-label">custom data attribute</label>
                   <input
                     id="options-code-dataAttribute"

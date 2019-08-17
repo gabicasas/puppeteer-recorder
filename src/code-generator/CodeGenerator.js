@@ -22,6 +22,7 @@ const frame="${frame}"
 const functionName="${functionName}"
 
 export const defaults = {
+  sandboxUrl: 'http://localhost:8124',
   wrapAsync: true,
   headless: true,
   waitForNavigation: true,

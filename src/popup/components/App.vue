@@ -112,6 +112,7 @@ export default {
       bus: null,
       filename:"",
       functionName:"",
+      sandboxUrl:"",
       keepAlive:false,
       version
     };
@@ -194,9 +195,10 @@ export default {
           console.debug("loaded options", options);
           this.recording = recording;
           const codeOptions = options ? options.code : {};
-
+          debugger;
+         
           const codeGen = new CodeGenerator(codeOptions);
-
+           this.sandboxUrl= codeGen._options.sandboxUrl;
         
           console.log(this.liveEvents);
           console.log(this.recording);
@@ -219,8 +221,8 @@ export default {
       this.storeState();
     },
     executeCode(){
-       
-      this.$http.post('http://localhost:8124',{
+      debugger; 
+      this.$http.post(this.sandboxUrl,{
                    filename: `${this.functionName}.js`,
                    functionName: this.functionName,
                    code: this.code
