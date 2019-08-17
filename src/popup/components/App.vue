@@ -7,77 +7,67 @@
           <small>{{version}} PFC</small>
         </span>
       </a>
-       <b-input-group>
-         <b-form-group
-                      label="Nombre de la función"
-                      label-for="functionNameId"
-                    >
-      <b-form-input v-model="functionName" id="functionNameId" />
-      </b-form-group>
-       <!-- <b-input-group-prepend is-text> -->
-          <b-form-group
-                      label="keepAlive"
-                      label-for="keepAliveId"
-                    >
-          <input type="checkbox" v-model="keepAlive" id="keepAliveId"/>
-          </b-form-group>
+      <b-input-group>
+        <b-form-group label="Nombre de la función" label-for="functionNameId">
+          <b-form-input v-model="functionName" id="functionNameId" />
+        </b-form-group>
+        <!-- <b-input-group-prepend is-text> -->
+        <b-form-group label="keepAlive" label-for="keepAliveId">
+          <input type="checkbox" v-model="keepAlive" id="keepAliveId" />
+        </b-form-group>
         <!-- </b-input-group-prepend> -->
-        
       </b-input-group>
       <div class="left">
         <div class="recording-badge" v-show="isRecording">
           <span class="red-dot"></span>
           {{recordingBadgeText}}
         </div>
-       <!-- <a href="#" @click="toggleShowHelp" class="header-button">
+        <!-- <a href="#" @click="toggleShowHelp" class="header-button">
           <img src="/images/help.svg" alt="help" width="18px" />
-        </a> -->
+        </a>-->
         <a href="#" @click="openOptions" class="header-button">
           <img src="/images/settings.svg" alt="settings" width="18px" />
         </a>
       </div>
     </div>
     <div class="main">
-       <b-form @submit.stop.prevent="">
-      <div class="tabs" v-show="!showHelp">
-        <RecordingTab
-          :code="code"
-          :is-recording="isRecording"
-          :live-events="liveEvents"
-          v-show="!showResultsTab"
-        />
-        <div class="recording-footer" v-show="!showResultsTab">
-          <button
-            class="btn btn-sm"
-            @click="toggleRecord"
-            :class="isRecording ? 'btn-danger' : 'btn-primary'"
-          >{{recordButtonText}}</button>
-          <button
-            class="btn btn-sm btn-primary btn-outline-primary"
-            @click="togglePause"
-            v-show="isRecording"
-          >{{pauseButtonText}}</button>
-         
-          <a href="#" @click="showResultsTab = true" v-show="code">view code</a>
+      <b-form @submit.stop.prevent>
+        <div class="tabs" v-show="!showHelp">
+          <RecordingTab
+            :code="code"
+            :is-recording="isRecording"
+            :live-events="liveEvents"
+            v-show="!showResultsTab"
+          />
+          <div class="recording-footer" v-show="!showResultsTab">
+            <button
+              class="btn btn-sm"
+              @click="toggleRecord"
+              :class="isRecording ? 'btn-danger' : 'btn-primary'"
+            >{{recordButtonText}}</button>
+            <button
+              class="btn btn-sm btn-primary btn-outline-primary"
+              @click="togglePause"
+              v-show="isRecording"
+            >{{pauseButtonText}}</button>
+
+            <a href="#" @click="showResultsTab = true" v-show="code">view code</a>
+          </div>
+          <ResultsTab
+            :code="code"
+            :copy-link-text="copyLinkText"
+            :restart="restart"
+            :set-copying="setCopying"
+            v-show="showResultsTab"
+          />
+          <div class="results-footer" v-show="showResultsTab">
+            <button class="btn btn-sm btn-primary" @click="restart" v-show="code">Reiniciar</button>
+
+            <b-button variant="primary" @click="executeCode" v-show="code">Ejecutar codigo</b-button>
+            <a href="#" v-clipboard:copy="code" @click="setCopying" v-show="code">{{copyLinkText}}</a>
+          </div>
         </div>
-        <ResultsTab
-          :code="code"
-          :copy-link-text="copyLinkText"
-          :restart="restart"
-          :set-copying="setCopying"
-          v-show="showResultsTab"
-        />
-        <div class="results-footer" v-show="showResultsTab">
-          <button class="btn btn-sm btn-primary" @click="restart" v-show="code">Reiniciar</button>
-         
-         
-          <b-button variant="primary" @click="executeCode" v-show="code">Ejecutar codigo</b-button>
-          <a href="#" v-clipboard:copy="code" @click="setCopying" v-show="code">{{copyLinkText}}</a>
-         
-         
-        </div>
-      </div>
-       </b-form>
+      </b-form>
       <HelpTab v-show="showHelp"></HelpTab>
     </div>
   </div>
@@ -89,16 +79,13 @@ import CodeGenerator from "../../code-generator/CodeGenerator";
 import RecordingTab from "./RecordingTab.vue";
 import ResultsTab from "./ResultsTab.vue";
 import HelpTab from "./HelpTab.vue";
-import Bridge from 'crx-bridge';
-import EventBus from '../index.js';
-
-
-
+import Bridge from "crx-bridge";
+import EventBus from "../index.js";
 
 export default {
   name: "App",
   components: { ResultsTab, RecordingTab, HelpTab },
-  
+
   data() {
     return {
       code: "",
@@ -110,56 +97,47 @@ export default {
       isPaused: false,
       isCopying: false,
       bus: null,
-      filename:"",
-      functionName:"",
-      sandboxUrl:"",
-      keepAlive:false,
+      filename: "",
+      functionName: "",
+      sandboxUrl: "",
+      keepAlive: false,
       version
     };
   },
- 
+
   mounted() {
+    EventBus.$on("reloadLiveEvents", message => {
+      console.log("reloadLiveEvents");
+      this.liveEvents = message;
+    });
 
- EventBus.$on('reloadLiveEvents',  (message) => {
-      console.log("reloadLiveEvents")
-     this.liveEvents=message;
-     
-    })
-
-  Bridge.onMessage('do-stuff', async (message) => {
-      console.debug(message);
-      if(this.liveEvents &&  this.liveEvents[0] && this.liveEvents[0].control)
-        this.$chrome.storage.local.get(["recording"],({recording})=> 
-        {
-         
-          this.liveEvents=recording
-          
-          })
+    Bridge.onMessage("do-stuff", async message => {
+      debugger;
+      //console.debug('mensaje', message);
+      console.debug(JSON.stringify(message.data));
+      if (this.liveEvents && this.liveEvents[0] && this.liveEvents[0].control)
+        this.$chrome.storage.local.get(["recording"], ({ recording }) => {
+          this.liveEvents = recording;
+        });
       //this.reload();
-      this.liveEvents.push(message.data)
-     
-    }) 
-    
-   Bridge.onMessage('changeSelector', async (message) => {
+      this.liveEvents.push(message.data);
+    });
+
+    Bridge.onMessage("changeSelector", async message => {
       // debugger
       console.debug(message);
-       this.liveEvents[message.data.index]=message.data.event;
-       //TODO: chapuza, solucionar esto del fallo de tener q añadir pq vue no se entera
-      this.liveEvents.push(message.data.event)
-      this.liveEvents.splice(this.liveEvents.length-1,1);
-     
-    })  
+      this.liveEvents[message.data.index] = message.data.event;
+      //TODO: chapuza, solucionar esto del fallo de tener q añadir pq vue no se entera
+      this.liveEvents.push(message.data.event);
+      this.liveEvents.splice(this.liveEvents.length - 1, 1);
+    });
 
     this.loadState(this.reload);
-   
+
     // Esto obtiene el bus que perite los postMessage
     this.bus = this.$chrome.extension.connect({ name: "recordControls" });
-
-     
   },
   methods: {
-   
-
     toggleRecord() {
       if (this.isRecording) {
         this.stop();
@@ -196,14 +174,17 @@ export default {
           this.recording = recording;
           const codeOptions = options ? options.code : {};
           debugger;
-         
+
           const codeGen = new CodeGenerator(codeOptions);
-           this.sandboxUrl= codeGen._options.sandboxUrl;
-        
+          this.sandboxUrl = codeGen._options.sandboxUrl;
+
           console.log(this.liveEvents);
           console.log(this.recording);
           // this.code = codeGen.generate(this.recording)
-          this.code = codeGen.generate(this.liveEvents,{keepAlive:this.keepAlive,functionName:this.functionName});
+          this.code = codeGen.generate(this.liveEvents, {
+            keepAlive: this.keepAlive,
+            functionName: this.functionName
+          });
           this.showResultsTab = true;
           this.storeState();
         }
@@ -220,43 +201,47 @@ export default {
       this.showResultsTab = this.isRecording = this.isPaused = false;
       this.storeState();
     },
-    executeCode(){
-      debugger; 
-      this.$http.post(this.sandboxUrl,{
-                   filename: `${this.functionName}.js`,
-                   functionName: this.functionName,
-                   code: this.code
-                }).then(response => {
-
-    console.debug(response);
-                    alert(response.data);
-  }, error => {
-     alert("Falla la peticion");
-                    console.debug(error);
-
-  });
-    
+    executeCode() {
+      debugger;
+      this.$http
+        .post(this.sandboxUrl, {
+          filename: `${this.functionName}.js`,
+          functionName: this.functionName,
+          code: this.code
+        })
+        .then(
+          response => {
+            console.debug(response);
+            alert(response.data);
+          },
+          error => {
+            alert("Falla la peticion");
+            console.debug(error);
+          }
+        );
     },
     openOptions() {
       if (this.$chrome.runtime.openOptionsPage) {
         this.$chrome.runtime.openOptionsPage();
       }
     },
-    reload(){
-  /* this.$chrome.storage.local.onChanged((changed, areaName) => {
+    reload() {
+      /* this.$chrome.storage.local.onChanged((changed, areaName) => {
       debugger;
     }); */
 
       if (this.isRecording) {
         console.debug("opened in recording state, fetching recording events");
         //setInterval(() =>
-        {this.$chrome.storage.local.get(
-          ["recording", "code"],
-          ({ recording }) => {
-            console.debug("loaded recording", recording);
-            this.liveEvents = recording;
-          }
-        );}//,1000);
+        {
+          this.$chrome.storage.local.get(
+            ["recording", "code"],
+            ({ recording }) => {
+              console.debug("loaded recording", recording);
+              this.liveEvents = recording;
+            }
+          );
+        } //,1000);
       }
 
       if (!this.isRecording && this.code) {

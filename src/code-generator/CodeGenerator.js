@@ -142,6 +142,7 @@ export default class CodeGenerator {
     this._frame = 'page'
     this._frameId = 0
     this._allFrames = {}
+    this.newPage=true
 
     this._hasNavigation = false
   }
@@ -185,6 +186,7 @@ export default class CodeGenerator {
   }
 
   _parseEvents(events) {
+    debugger;
     let result = ''
 
     for (let i = 0; i < events.length; i++) {
@@ -232,7 +234,14 @@ export default class CodeGenerator {
           }
           break
         case 'goto*':
+          if(this.newPage){
           this._blocks.push(this._handleGoto(href, frameId))
+            this.newPage=false
+          }else{
+            this._blocks.push(this._handleWaitForNavigation())
+            this._hasNavigation = true
+          }
+
           break
         case 'viewport*':
           this._blocks.push((this._handleViewport(value.width, value.height)))

@@ -71,7 +71,7 @@
                     <code>headless</code> in puppeteer launch options
                   </label>
                 </div>
-                <div class="settings-group">
+              <!--  <div class="settings-group">
                   <label>
                     <input
                       id="options-code-waitForNavigation"
@@ -82,7 +82,7 @@
                     add
                     <code>waitForNavigation</code> lines on navigation
                   </label>
-                </div>
+                </div> -->
                 <div class="settings-group">
                   <label>
                     <input
@@ -532,7 +532,11 @@ export default {
         border-radius: 10px;
         -webkit-box-sizing: border-box;
       }
+      
     }
   }
 }
+textarea.form-control {
+        height: 150px !important;
+      }
 </style>

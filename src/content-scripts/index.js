@@ -62,9 +62,14 @@ class EventRecorder {
     }
 
     if (this.isTopFrame) {
+     /*
       this.sendMessage({ control: 'event-recorder-started' })
       this.sendMessage({ control: 'get-current-url', href: window.location.href })
       this.sendMessage({ control: 'get-viewport-size', coordinates: { width: window.innerWidth, height: window.innerHeight } })
+     */
+    this.sendMessage({ action: 'event-recorder-started' })
+      this.sendMessage({ action: 'goto*', href: window.location.href })
+      this.sendMessage({ action: 'viewport*', value: { width: window.innerWidth, height: window.innerHeight } })
       console.debug('Puppeteer Recorder in-page EventRecorder started')
     }
   }
