@@ -19,11 +19,13 @@ Este es el que se ejecuta en la pagina desde el incio
 
 class EventRecorder {
   constructor () {
+    console.log("Construyendo")
     this.eventLog = []
     this.previousEvent = null
     this.dataAttribute = null
     this.isTopFrame = (window.location === window.parent.location)
-    this.actualSelector=null;
+    this.actualSelector=null
+    this.customSelector=false
 
     this.simmer = new Simmer(window, { /* some custom configuration */ })
   }
@@ -32,10 +34,11 @@ class EventRecorder {
     // We need to check the existence of chrome for testing purposes
     if (chrome.storage && chrome.storage.local) {
       chrome.storage.local.get(['options'], ({options}) => {
-        const { dataAttribute } = options ? options.code : {}
+        const { dataAttribute, customSelector } = options ? options.code : {}
         if (dataAttribute) {
           this.dataAttribute = dataAttribute
         }
+        this.customSelector = customSelector;
         this._initializeRecorder()
       })
     } else {
@@ -43,11 +46,18 @@ class EventRecorder {
     }
   }
 
+  
+
   _initializeRecorder () {
 
     window.addEventListener('mousemove', (evt) => {
       window.positionglobal=evt;
-      this.actualSelector=this.simmer(evt.path[0]);
+     
+      if(this.customSelector)
+        this.actualSelector= obtainCssSelector(evt.path[0])
+      else
+        this.actualSelector=this.simmer(evt.path[0]);
+      console.log(this.customSelector);  
       console.log(this.actualSelector);
     });
 
@@ -82,7 +92,10 @@ class EventRecorder {
   }
 
   changeDevToolsSelector(element, event, index){
+   
     let selector=this.simmer(element);
+    if(this.customSelector)
+      selector= obtainCssSelector(element)
     event.selector=selector;
     Bridge.sendMessage('changeSelector', {index:index,event:event}, 'devtools')
     Bridge.sendMessage('changeSelector', {index:index,event:event}, 'content-script')
@@ -108,8 +121,11 @@ class EventRecorder {
   }
 
   recordEvent (e) {
-   /* if(e.type==="keydown")
-    debugger */
+    if(e.type==="keyup"  && e.keyCode===113){
+      console.debug("No se guarda el soltado de F2")
+      return;
+    }
+    
     console.log('Evento grabado')
     console.log(e)
     if (this.previousEvent && this.previousEvent.timeStamp === e.timeStamp) return
@@ -119,11 +135,18 @@ class EventRecorder {
     // for these events we cannot generate selectors, which is OK
     try {
       // Aqui se obtiene e selector a aprtir del evento
-      const selector = this.dataAttribute && e.target.hasAttribute && e.target.hasAttribute(this.dataAttribute)
+      let selector = this.dataAttribute && e.target.hasAttribute && e.target.hasAttribute(this.dataAttribute)
         ? formatDataSelector(e.target, this.dataAttribute)
         : finder(e.target, {seedMinLength: 5, optimizedMinLength: 10})
      /* if(e.type.indexOf("key")!=-1)
+
+
         debugger;*/
+
+        if(this.customSelector)
+          selector= obtainCssSelector(e.target)
+        console.log("customSelector",this.customSelector)
+
       const msg = {
         selector: (e.type==="keydown" && e.keyCode===113)?this.actualSelector:selector,
         value: e.target.value,
@@ -163,6 +186,37 @@ function getCoordinates (evt) {
 
 function formatDataSelector (element, attribute) {
   return `[${attribute}="${element.getAttribute(attribute)}"]`
+}
+
+
+function obtainCssSelector(myElement) {
+  let selectors = [];
+  let mySelector = function(element) {
+    if (element.tagName == "BODY") {
+      selectors.push("body");
+      return;
+    } else {
+     
+      if (element.parentNode) {
+        let selector = element.tagName;
+        for (let i = 0; i < element.parentNode.children.length; i++) {
+          if (element == element.parentNode.children[i])
+            selector += ":nth-child(" + (i + 1) + ")";
+        }
+        selectors.push(selector);
+        mySelector(element.parentNode);
+      }
+    }
+  };
+
+  mySelector(myElement);
+
+  var result = "";
+  for (var i = selectors.length - 1; i >= 0; i--) {
+    result += selectors[i];
+    if (i != 0) result += " > ";
+  }
+  return result;
 }
 
 window.eventRecorder = new EventRecorder()

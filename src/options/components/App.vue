@@ -18,17 +18,27 @@
                     type="text"
                     v-model="options.code.sandboxUrl"
                     @change="save"
-                    placeholder="your custom data-* attribute"
+                    placeholder="Introduce aqui la URL"
                   />
                   <small>
                     Define el endpoint donde está escuchando el sandbox al que enviaremose código a ejecutar
                   </small>
                 </div>
+  <div class="settings-group">
+                  <label>
+                    <input
+                    
+                      type="checkbox"
+                      v-model="options.code.customSelector"
+                      @change="save"
+                    />
+                    Indica si se usa selector sin id´s
+                  </label>
+                </div>
+                 
 
 
-
-
-                <div class="settings-group">
+              <!--  <div class="settings-group">
                   <label class="settings-label">custom data attribute</label>
                   <input
                     id="options-code-dataAttribute"
@@ -42,7 +52,7 @@
                     <code>data-*</code> attribute that we'll attempt to use when selecting the elements. This is handy
                     when React or Vue based apps generate random class names.
                   </small>
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="settings-block">
@@ -59,7 +69,7 @@
                     wrap code in async function
                   </label>
                 </div>
-                <div class="settings-group">
+               <!-- <div class="settings-group">
                   <label>
                     <input
                       id="options-code-headless"
@@ -70,8 +80,8 @@
                     set
                     <code>headless</code> in puppeteer launch options
                   </label>
-                </div>
-              <!--  <div class="settings-group">
+                </div> -->
+                <div class="settings-group">
                   <label>
                     <input
                       id="options-code-waitForNavigation"
@@ -82,7 +92,7 @@
                     add
                     <code>waitForNavigation</code> lines on navigation
                   </label>
-                </div> -->
+                </div> 
                 <div class="settings-group">
                   <label>
                     <input

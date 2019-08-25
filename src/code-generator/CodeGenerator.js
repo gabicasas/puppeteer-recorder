@@ -22,6 +22,7 @@ const frame="${frame}"
 const functionName="${functionName}"
 
 export const defaults = {
+  customSelector: true,
   sandboxUrl: 'http://localhost:8124',
   wrapAsync: true,
   headless: true,
@@ -71,9 +72,7 @@ export const defaults = {
         return obj.innerHTML
         });`,
   readDinamicDataCode: ` page.exposeFunction('${varData}_puppeteerMutationListener', function(value){
-    for(let i in value){
-      globalVar[i]=value[i];
-    }
+     globalVar['${varData}']=value;
      console.log(globalVar);
      eventEmitter.emit('changeData',value);
   });
@@ -107,9 +106,7 @@ export const defaults = {
       });`,
   readWaitDinamicDataCode: `  await ${frame}.waitForSelector("${selector}")
     page.exposeFunction('${varData}_puppeteerMutationListener', function(value){
-      for(let i in value){
-        globalVar[i]=value[i];
-      }
+       globalVar['${varData}']=value;
        console.log(globalVar);
        eventEmitter.emit('changeData',value);
     });

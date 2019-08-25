@@ -112,7 +112,7 @@ export default {
     });
 
     Bridge.onMessage("do-stuff", async message => {
-      debugger;
+     
       //console.debug('mensaje', message);
       console.debug(JSON.stringify(message.data));
       if (this.liveEvents && this.liveEvents[0] && this.liveEvents[0].control)
