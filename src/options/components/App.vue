@@ -231,8 +231,9 @@
                       ></b-form-textarea>
                     </b-form-group>
                     <b-button @click="resetClick">Reset</b-button>
+                    <b-card-text><br/>Define el codigo que quiere que sea generado para simular un click de raton  esperando a que el selector este disponible</b-card-text>
                     <b-form-group
-                      label="waitforSelector Variables disponibles: {frame},{selector}"
+                      label=" Variables disponibles: {frame},{selector}"
                       label-for="options-code-wait-onClick"
                     >
                       <b-form-textarea
@@ -338,7 +339,7 @@
                 </b-tab>
 
                 <b-tab title="Read Data" active>
-                  <b-card-text>Define el codigo para leer informacion</b-card-text>
+                  <b-card-text>Define el codigo para leer información estática</b-card-text>
                   <div class="settings-group">
                     <b-form-group
                       label="Variables disponibles: {frame},{selector}"
@@ -352,10 +353,10 @@
                       ></b-form-textarea>
                     </b-form-group>
                     <b-button @click="options.code.readDataCode=defaultCode.code.readDataCode;save()">Reset</b-button>
-                    
-                  
+                    <br/>
+                  <b-card-text> <br/>Define el codigo para leer información dinámica</b-card-text>
                     <b-form-group
-                      label="Dinamic Variables disponibles: {frame}"
+                      label="Variables disponibles: {frame}"
                       label-for="options-code-readDinamicData"
                     >
                       <b-form-textarea
@@ -366,6 +367,7 @@
                       ></b-form-textarea>
                     </b-form-group>
                     <b-button @click="options.code.readDinamicDataCode=defaultCode.code.readDinamicDataCode;save()">Reset</b-button>
+                    <b-card-text> <br/>Define el codigo para leer información estática (con espera a que el selector este disponible )</b-card-text>
                       <b-form-group
                       label="Wait Variables disponibles: {frame}"
                       label-for="options-code-readWaitData"
@@ -376,6 +378,7 @@
                         @change="save"
                         placeholder="add multiple lines"
                       ></b-form-textarea>
+                     <b-card-text> <br/>Define el codigo para leer información dinámica (con espera a que el selector este disponible )</b-card-text>  
                     </b-form-group>
                       <b-button @click="options.code.readWaitDataCode=defaultCode.code.readWaitDataCode;save()">Reset</b-button>
                     <b-form-group
