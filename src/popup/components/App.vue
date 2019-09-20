@@ -2,9 +2,9 @@
   <div id="puppeteer-recorder" class="recorder">
     <div class="header">
       <a href="#" @click="goHome">
-        Puppeteer recorder
+       Generador de componentes
         <span class="text-muted">
-          <small>{{version}} PFC</small>
+          <small><!-- {{version}} --> PFC</small>
         </span>
       </a>
       <b-input-group>

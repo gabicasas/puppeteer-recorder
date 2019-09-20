@@ -93,7 +93,7 @@ class EventRecorder {
 
   changeDevToolsSelector(element, event, index){
   
-    debugger;
+   
     if(element.nodeType==3) //Si es un nodo de texto hay que utilizar el padre
       element=element.parentNode;
     let selector=this.simmer(element);
