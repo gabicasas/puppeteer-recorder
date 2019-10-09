@@ -2,6 +2,7 @@ import eventsToRecord from '../code-generator/dom-events-to-record'
 import finder from '@medv/finder'
 import Simmer from 'simmerjs'
 import Bridge from 'crx-bridge';
+import TemplateGenerator from './TemplateGenerator';
 
 /*
 
@@ -57,8 +58,8 @@ class EventRecorder {
         this.actualSelector= obtainCssSelector(evt.path[0])
       else
         this.actualSelector=this.simmer(evt.path[0]);
-      console.log(this.customSelector);  
-      console.log(this.actualSelector);
+      //console.log(this.customSelector);  
+      //console.log(this.actualSelector);
     });
 
     const events = Object.values(eventsToRecord)
@@ -224,3 +225,5 @@ function obtainCssSelector(myElement) {
 
 window.eventRecorder = new EventRecorder()
 window.eventRecorder.start()
+window.__templateGenerator__= new TemplateGenerator();
+window.__templateGenerator__.start()

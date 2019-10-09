@@ -113,8 +113,10 @@ export default {
 
     Bridge.onMessage("do-stuff", async message => {
      
+    // if(!message.data)
+     //   debugger;
       //console.debug('mensaje', message);
-      console.debug(JSON.stringify(message.data));
+      console.log("Aqui llega"+JSON.stringify(message));
       if (this.liveEvents && this.liveEvents[0] && this.liveEvents[0].control)
         this.$chrome.storage.local.get(["recording"], ({ recording }) => {
           this.liveEvents = recording;
