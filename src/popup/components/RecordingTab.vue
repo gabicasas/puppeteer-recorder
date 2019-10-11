@@ -12,8 +12,10 @@
           <li v-for="(event, index) in liveEvents" :key="index" class="event-list-item">
             <div v-if="event.action=='keydown' && event.keyCode==113">
               Dinamic Data <input type="checkbox" v-model="event.dinamicData" @change="recordEvent"/>
+              
               <input type="text" v-model="event.varData" @change="recordEvent"/>
               <button @click="changeSelector(event,index)">Cambiar selector</button>
+
               <span>{{viewEventValue(event)}}</span>
             </div>  
             <div class="event-label">
@@ -21,6 +23,8 @@
             </div>
             <div class="event-description">
               <div class="event-action">{{event.action}}</div>
+             
+              <b-form-select v-if="event.action=='template'" v-model="event.value" :options="[{value:undefined,text:''},0,1,2]"></b-form-select>
               <div class="event-props text-muted">{{event.selector || parseEventValue(event)}}</div>
             </div>
           </li>

@@ -184,8 +184,15 @@ export default class CodeGenerator {
     
   }
 
+  _getTemplateCode(selector,value){
+    let nodes=selector;
+    let action=value;
+
+    return action+'('+nodes+')'
+  }
+
   _parseEvents(events) {
-    debugger;
+    
     let result = ''
 
     for (let i = 0; i < events.length; i++) {
@@ -252,7 +259,7 @@ export default class CodeGenerator {
         case 'template':
             const block = new Block(this._frameId)
            
-            block.addLine({ type: domEvents.TEMPLATE, value: 'CODIGOFUENTE' })
+            block.addLine({ type: domEvents.TEMPLATE, value: this._getTemplateCode(selector,value) })
             this._blocks.push(block)
           break;  
       }

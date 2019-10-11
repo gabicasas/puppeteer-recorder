@@ -111,9 +111,9 @@ export default {
       this.liveEvents = message;
     });
 
-   /* Bridge.onMessage("pause", async message => {
+    Bridge.onMessage("pause", async message => {
       this.togglePause();
-    })*/
+    })
 
     Bridge.onMessage("do-stuff", async message => {
      
@@ -126,7 +126,8 @@ export default {
           this.liveEvents = recording;
         });
       //this.reload();
-      this.liveEvents.push(message.data);
+      if(!this.isPaused)
+        this.liveEvents.push(message.data);
     });
 
     Bridge.onMessage("changeSelector", async message => {

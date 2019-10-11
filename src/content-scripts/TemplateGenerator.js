@@ -24,7 +24,7 @@ var items=[{selector:aa, nodos:...}]
         //F7 par cargar el dato
         //Se pausa la lectura de info
         Bridge.sendMessage('pause',{}, 'background')
-        //Bridge.sendMessage('pause', {}, 'devtools')
+        Bridge.sendMessage('pause', {}, 'devtools')
         this.datoDom = window.mousePositionEvt.target;
         this.parentDatoDom = this.datoDom;
         this.datoDom.style.border = "1px dashed red";
@@ -90,7 +90,7 @@ var items=[{selector:aa, nodos:...}]
           coordinates: null
         }
         Bridge.sendMessage('pause',{}, 'background')
-        //Bridge.sendMessage('pause', {}, 'devtools')
+        Bridge.sendMessage('pause', {}, 'devtools')
         Bridge.sendMessage('do-stuff',msg, 'background')
         Bridge.sendMessage('do-stuff', msg, 'devtools')
        // Bridge.sendMessage('do-stuff', msg, 'content-script')
