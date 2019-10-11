@@ -249,6 +249,12 @@ export default class CodeGenerator {
           this._blocks.push(this._handleWaitForNavigation())
           this._hasNavigation = true
           break
+        case 'template':
+            const block = new Block(this._frameId)
+           
+            block.addLine({ type: domEvents.TEMPLATE, value: 'CODIGOFUENTE' })
+            this._blocks.push(block)
+          break;  
       }
     }
 

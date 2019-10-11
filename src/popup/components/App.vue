@@ -111,6 +111,10 @@ export default {
       this.liveEvents = message;
     });
 
+   /* Bridge.onMessage("pause", async message => {
+      this.togglePause();
+    })*/
+
     Bridge.onMessage("do-stuff", async message => {
      
     // if(!message.data)

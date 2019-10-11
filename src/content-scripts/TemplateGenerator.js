@@ -22,6 +22,9 @@ var items=[{selector:aa, nodos:...}]
     window.addEventListener("keydown", evt => {
       if (evt.keyCode == 118 || evt.key=="q") {
         //F7 par cargar el dato
+        //Se pausa la lectura de info
+        Bridge.sendMessage('pause',{}, 'background')
+        //Bridge.sendMessage('pause', {}, 'devtools')
         this.datoDom = window.mousePositionEvt.target;
         this.parentDatoDom = this.datoDom;
         this.datoDom.style.border = "1px dashed red";
@@ -75,17 +78,19 @@ var items=[{selector:aa, nodos:...}]
         console.log('(SIG t F10)')
       } else if (evt.keyCode == 121 || evt.key=="t") {
         console.log("aa");
-        debugger;
+       
         console.log("Se envia a la extension el dato")
         const msg = {
           selector: JSON.stringify(this.nodes),
           value: null,
           tagName: null,
-          action: "click",
+          action: "template",
           keyCode:  null,
           href:  null,
           coordinates: null
         }
+        Bridge.sendMessage('pause',{}, 'background')
+        //Bridge.sendMessage('pause', {}, 'devtools')
         Bridge.sendMessage('do-stuff',msg, 'background')
         Bridge.sendMessage('do-stuff', msg, 'devtools')
        // Bridge.sendMessage('do-stuff', msg, 'content-script')

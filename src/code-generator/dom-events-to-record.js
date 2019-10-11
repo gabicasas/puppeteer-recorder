@@ -8,7 +8,9 @@ export default {
   SUBMIT: 'submit',
   LOAD: 'load',
   UNLOAD: 'unload'
-  , CONTEXTMENU: 'contextmenu'
+  , CONTEXTMENU: 'contextmenu',
+  TEMPLATE: 'template'
+
 }
 
 // const events = [
