@@ -1,9 +1,16 @@
 import Bridge from 'crx-bridge';
 export default class TemplateGenerator {
   constructor() {
+    // Elemento seleccionado
     this.datoDom = null;
+    // Padre superior del elemento seleccionado
     this.parentDatoDom = null;
+    // Nodos de la plantilla seleccionda
     this.nodes = null;
+    // Guarda el selector en formato estructurado del elemento seleccionado
+    this.selector = null;
+    // Guarda el selector css relativo del elemento seleccionado
+    this.selectorCss = null;
 
     /*
 Modelo de datos
@@ -28,25 +35,26 @@ var items=[{selector:aa, nodos:...}]
         this.datoDom = window.mousePositionEvt.target;
         this.parentDatoDom = this.datoDom;
         this.datoDom.style.border = "1px dashed red";
-        console.log("(SIG w F8)DATO SELECCIONADO", this.datoDom);
+        console.log("DATO SELECCIONADO. (SIG w/F8 para seleccionar padre)", this.datoDom);
       } else if (evt.keyCode == 119 || evt.key=="w") {
         //F8 para buscar padre
         this.parentDatoDom = this.parentDatoDom.parentNode;
         this.parentDatoDom.style.border = "1px dashed green";
-        console.log("(SIG e F9)PADRE SELECCIONADO", this.parentDatoDom);
-      } else if (/*evt.keyCode == 120*/ evt.key=="e") {
+        console.log("PADRE SELECCIONADO.(SIG e/F9 para obtener selector o w/F8 para cambiar padre)", this.parentDatoDom);
+      } else if (evt.keyCode == 120 || evt.key=="e") {
         //F9 para guardar template
-        let selector = this.obtainCssSelector(this.datoDom, this.parentDatoDom);
+        //debugger;
+        this.selector = this.obtainCssSelector(this.datoDom, this.parentDatoDom);
         let nodos = this.textNodesUnder(this.parentDatoDom);
 
         /* nodos.map(nodo => {
    nodo.node.parentNode.addEventListener("click", (e) =>{
    });
 })  */
-        var selecD = this.selectorDom(selector);
-        document.querySelectorAll(selecD).forEach(element => {
+        this.selectorCss = this.selectorDom(this.selector);
+        document.querySelectorAll(this.selectorCss).forEach(element => {
           let newParent = element;
-          for (let i = 0; i < selector.length; i++)
+          for (let i = 0; i < this.selector.length; i++)
             newParent = newParent.parentNode;
           let newSelector = this.obtainCssSelector(element, newParent);
           let newNodos = this.textNodesUnder(newParent);
@@ -62,10 +70,10 @@ var items=[{selector:aa, nodos:...}]
         });
         //los guardo para el evento que seleccina el texto fijo
         this.nodes = nodos;
-        this.items.push({ selector: selector, nodos: nodos });
+        this.items.push({ selector: this.selector, nodos: nodos });
         this.datoDom = null;
         this.parentDatoDom = null;
-        console.log("(SIG r F2)", this.items);
+        console.log("OBTENIDO SELECTOR. (SIG r/F2 para obtener textos identificativos)", this.items);
       } else if (evt.keyCode == 113 || evt.key=="r") {
         //F2 para seleccionar los textos fijos
         this.nodes.map(nodo => {
@@ -75,13 +83,13 @@ var items=[{selector:aa, nodos:...}]
             nodo.fixed = true;
           }
         });
-        console.log('(SIG t F10)')
+        console.log('OBTENIDOS TEXTOS.(SIG t/F10 para dar nombre o r/F2 par mas textos)')
       } else if (evt.keyCode == 121 || evt.key=="t") {
         console.log("aa");
        
         console.log("Se envia a la extension el dato")
         const msg = {
-          selector: JSON.stringify(this.nodes),
+          selector: JSON.stringify({selector: this.selectorCss, selectorDom:this.selector,nodes: this.nodes}),
           value: null,
           tagName: null,
           action: "template",

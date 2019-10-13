@@ -24,7 +24,11 @@
             <div class="event-description">
               <div class="event-action">{{event.action}}</div>
              
-              <b-form-select v-if="event.action=='template'" v-model="event.value" :options="[{value:undefined,text:''},0,1,2]"></b-form-select>
+              <b-form-select v-if="event.action=='template'" v-model="event.value" 
+              :options="[{value:'staticData',text:'Static data'},
+              {value:'dinamicData',text:'dinamic data'},
+              {value:'custom',text:'custom'}]"></b-form-select>
+              <input type="text" v-if="event.value=='staticData'" v-model="event.href" />
               <div class="event-props text-muted">{{event.selector || parseEventValue(event)}}</div>
             </div>
           </li>

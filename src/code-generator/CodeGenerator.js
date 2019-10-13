@@ -20,6 +20,9 @@ const varData="${varData}"
 const selector="${selector}"
 const frame="${frame}"
 const functionName="${functionName}"
+const templateCode="${templateCode}"
+const nodes="${nodes}"
+const customCode="${customCode}"
 
 export const defaults = {
   customSelector: true,
@@ -129,7 +132,15 @@ export const defaults = {
       }
       let obj= document.querySelector("${selector}");
       observer.observe(obj, config)
-    });`
+    });`,
+    templateCode:{'generic':` await ${frame}.evaluate(element => {
+          ${templateCode}
+    })`,
+    'staticData':`const tg = require('./TemplateGenerator.js');   
+    (new tg.TemplateGenerator(${nodes})).staticData()`,
+    'dinamicData':`const tg = require('./TemplateGenerator.js');   
+    (new tg.TemplateGenerator(${nodes})).dinamicData(${customCode})`
+  }
 
   // }
 }
@@ -183,12 +194,26 @@ export default class CodeGenerator {
     return code
     
   }
-
-  _getTemplateCode(selector,value){
+     /**
+      * 
+      * @param {*} selector tiene todos los datos serializados
+      * @param {*} value la funcion asociada
+      * @param {*} href Codigo custom
+      */
+  _getTemplateCode(selector,value,href){
+    debugger;
     let nodes=selector;
     let action=value;
 
-    return action+'('+nodes+')'
+    //Se selecciona la funcion deseada
+    let code=this._options.templateCode.generic.replace(/\${templateCode}/g,this._options.templateCode[value]);
+    //se reemplazan los elementos capturados
+    code=code.replace(/\${nodes}/g,selector);
+    //si los hubiera, se setea codigo custom
+    code=code.replace(/\${customCode}/g,href);
+    return code;
+    return `const tg = require('./TemplateGenerator.js');   
+    (new tg.TemplateGenerator(${nodes})).${action}()`;
   }
 
   _parseEvents(events) {
@@ -259,7 +284,7 @@ export default class CodeGenerator {
         case 'template':
             const block = new Block(this._frameId)
            
-            block.addLine({ type: domEvents.TEMPLATE, value: this._getTemplateCode(selector,value) })
+            block.addLine({ type: domEvents.TEMPLATE, value: this._getTemplateCode(selector,value,href) })
             this._blocks.push(block)
           break;  
       }
