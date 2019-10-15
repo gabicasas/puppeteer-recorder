@@ -57,6 +57,7 @@ export const defaults = {
   (async () => {
     const constants=require('./constants.js')
     const puppeteer = require('puppeteer');
+    const fs= require('fs')
     const keyboardMapping = require('./USKeyboardLayout.js');
     const browser = await puppeteer.launch(constants.PUPPETEER_OPTS)
     const page = await browser.newPage()`, 
@@ -133,13 +134,13 @@ export const defaults = {
       let obj= document.querySelector("${selector}");
       observer.observe(obj, config)
     });`,
-    templateCode:{'generic':` await ${frame}.evaluate(element => {
+    templateCode:{'generic':`await page.evaluate(fs.readFileSync('./TemplateGenerator.js', 'utf8'));
+      await ${frame}.evaluate(element => {
           ${templateCode}
     })`,
-    'staticData':`const tg = require('./TemplateGenerator.js');   
-    (new tg.TemplateGenerator(${nodes})).staticData()`,
-    'dinamicData':`const tg = require('./TemplateGenerator.js');   
-    (new tg.TemplateGenerator(${nodes})).dinamicData(${customCode})`
+    'staticData':`(new TemplateGenerator(${nodes})).staticData()`,
+    'dinamicData':`(new TemplateGenerator(${nodes})).dinamicData()`,
+    'custom':`(new TemplateGenerator(${nodes})).customCode(${customCode})`
   }
 
   // }
@@ -200,7 +201,7 @@ export default class CodeGenerator {
       * @param {*} value la funcion asociada
       * @param {*} href Codigo custom
       */
-  _getTemplateCode(selector,value,href){
+  _getTemplateCode(frame,selector,value,href){
     debugger;
     let nodes=selector;
     let action=value;
@@ -211,6 +212,8 @@ export default class CodeGenerator {
     code=code.replace(/\${nodes}/g,selector);
     //si los hubiera, se setea codigo custom
     code=code.replace(/\${customCode}/g,href);
+
+    code=code.replace(/\${frame}/g,frame);
     return code;
     return `const tg = require('./TemplateGenerator.js');   
     (new tg.TemplateGenerator(${nodes})).${action}()`;
@@ -284,7 +287,7 @@ export default class CodeGenerator {
         case 'template':
             const block = new Block(this._frameId)
            
-            block.addLine({ type: domEvents.TEMPLATE, value: this._getTemplateCode(selector,value,href) })
+            block.addLine({ type: domEvents.TEMPLATE, value: this._getTemplateCode(frameId,selector,value,href) })
             this._blocks.push(block)
           break;  
       }
