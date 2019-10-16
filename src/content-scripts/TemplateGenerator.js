@@ -89,11 +89,14 @@ var items=[{selector:aa, nodos:...}]
        
         console.log("Se envia a la extension el dato")
         const msg = {
-          selector: JSON.stringify({selector: this.selectorCss, selectorDom:this.selector,nodes: this.nodes}),
+          selector: JSON.stringify({selector: this.selectorCss, 
+                                    selectorDom:this.selector,
+                                    nodes: this.nodes,
+                                    customFunction: this.items[0]?this.items[0].id:"_"}),
           value: null,
           tagName: null,
           action: "template",
-          keyCode:  null,
+          keyCode:  this.items[0]?this.items[0].id:"_",
           href:  null,
           coordinates: null
         }
