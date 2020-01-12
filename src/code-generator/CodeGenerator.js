@@ -136,7 +136,7 @@ export const defaults = {
       let obj= document.querySelector("${selector}");
       observer.observe(obj, config)
     });`,
-    templateCode:{'generic':` await page.evaluate(fs.readFileSync('./TemplateGenerator.js', 'utf8')); 
+    templateCode:{'generic':` await ${frame}.evaluate(fs.readFileSync('./TemplateGenerator.js', 'utf8')); 
     await ${frame}.evaluate(element => {
           ${templateCode}
     })`,
@@ -203,7 +203,7 @@ export default class CodeGenerator {
       * @param {*} href Codigo custom
       */
   _getTemplateCode(selector,value,href){
-   
+    debugger;
     let nodes=selector;
     let action=value;
 
