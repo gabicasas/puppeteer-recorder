@@ -65,6 +65,7 @@ const base = {
       { from: './src/devtools/devtoolsBackground.html', to: './devtoolsBackground.html' },
       { from: './src/devtools/devtoolsBackground.js', to: './devtoolsBackground.js' }
     ]),
+    /*Index principal*/ 
     new HtmlWebpackPlugin({
       template: './src/popup/template.html',
       chunks: ['popup']}),

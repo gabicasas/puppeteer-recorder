@@ -50,12 +50,14 @@ export const defaults = {
   headerCode:  `async function ${functionName}(globalVar, eventEmitter){
   const constants=require('./constants.js')
    const puppeteer = require('puppeteer');
+   const fs = require('fs')
   const keyboardMapping = require('./USKeyboardLayout.js');
   const browser = await puppeteer.launch(constants.PUPPETEER_OPTS)
   const page = await browser.newPage()`, 
   wrapperHeaderCode:  `function ${functionName}(globalVar, eventEmitter){
   (async () => {
     const constants=require('./constants.js')
+    const fs = require('fs')
     const puppeteer = require('puppeteer');
     const keyboardMapping = require('./USKeyboardLayout.js');
     const browser = await puppeteer.launch(constants.PUPPETEER_OPTS)
@@ -133,13 +135,12 @@ export const defaults = {
       let obj= document.querySelector("${selector}");
       observer.observe(obj, config)
     });`,
-    templateCode:{'generic':` await ${frame}.evaluate(element => {
+    templateCode:{'generic':` await page.evaluate(fs.readFileSync('./TemplateGenerator.js', 'utf8')); 
+    await ${frame}.evaluate(element => {
           ${templateCode}
     })`,
-    'staticData':`const tg = require('./TemplateGenerator.js');   
-    (new tg.TemplateGenerator(${nodes})).staticData()`,
-    'dinamicData':`const tg = require('./TemplateGenerator.js');   
-    (new tg.TemplateGenerator(${nodes})).dinamicData(${customCode})`
+    'staticData':` (new TemplateGenerator(${nodes})).staticData()`,
+    'dinamicData':` (new TemplateGenerator(${nodes})).dinamicData(${customCode})`
   }
 
   // }
@@ -201,7 +202,7 @@ export default class CodeGenerator {
       * @param {*} href Codigo custom
       */
   _getTemplateCode(selector,value,href){
-    debugger;
+   
     let nodes=selector;
     let action=value;
 

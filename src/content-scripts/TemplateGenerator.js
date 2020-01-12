@@ -27,6 +27,7 @@ var items=[{selector:aa, nodos:...}]
     });
 
     window.addEventListener("keydown", evt => {
+      
       if (evt.keyCode == 118 || evt.key=="q") {
         //F7 par cargar el dato
         //Se pausa la lectura de info

@@ -165,6 +165,7 @@ export default {
       this.storeState();
     },
     start() {
+     
       this.cleanUp();
       console.debug("start recorder");
       this.bus.postMessage({ action: "start" });
@@ -180,7 +181,7 @@ export default {
           console.debug("loaded options", options);
           this.recording = recording;
           const codeOptions = options ? options.code : {};
-          debugger;
+        
 
           const codeGen = new CodeGenerator(codeOptions);
           this.sandboxUrl = codeGen._options.sandboxUrl;

@@ -61,6 +61,7 @@ class RecordingController {
   }
 
   start () {
+    
     console.debug('start recording')
     this.cleanUp(() => {
       this._badgeState = 'rec'
