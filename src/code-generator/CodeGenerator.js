@@ -59,6 +59,7 @@ export const defaults = {
     const constants=require('./constants.js')
     const fs = require('fs')
     const puppeteer = require('puppeteer');
+    const fs= require('fs')
     const keyboardMapping = require('./USKeyboardLayout.js');
     const browser = await puppeteer.launch(constants.PUPPETEER_OPTS)
     const page = await browser.newPage()`, 
@@ -212,9 +213,10 @@ export default class CodeGenerator {
     code=code.replace(/\${nodes}/g,selector);
     //si los hubiera, se setea codigo custom
     code=code.replace(/\${customCode}/g,href);
+
+    code=code.replace(/\${frame}/g,frame);
     return code;
-    return `const tg = require('./TemplateGenerator.js');   
-    (new tg.TemplateGenerator(${nodes})).${action}()`;
+    
   }
 
   _parseEvents(events) {
@@ -285,7 +287,7 @@ export default class CodeGenerator {
         case 'template':
             const block = new Block(this._frameId)
            
-            block.addLine({ type: domEvents.TEMPLATE, value: this._getTemplateCode(selector,value,href) })
+            block.addLine({ type: domEvents.TEMPLATE, value: this._getTemplateCode(frameId,selector,value,href,keyCode) })
             this._blocks.push(block)
           break;  
       }
