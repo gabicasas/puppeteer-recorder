@@ -3,6 +3,20 @@ import pptrActions from '../code-generator/pptr-actions'
 import CodeGenerator from '../code-generator/CodeGenerator'
 import Bridge from 'crx-bridge'
 
+
+debugger;
+function getword(info,tab) {
+  console.log("Word " + info.selectionText + " was clicked.");
+  chrome.tabs.create({  
+    url: "http://www.google.com/search?q=" + info.selectionText
+  });
+}
+chrome.contextMenus.create({
+  id: "myContextMenu",
+  title: "Search: %s", 
+  contexts:["selection"]//, 
+ // onclick: getword
+});
 /*
 
 Este se ejecuta en la extension desde el inicio
@@ -204,3 +218,6 @@ class RecordingController {
 console.debug('booting recording controller')
 window.recordingController = new RecordingController()
 window.recordingController.boot()
+
+
+

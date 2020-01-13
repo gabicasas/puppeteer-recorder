@@ -36,12 +36,18 @@ var items=[{selector:aa, nodos:...}]
         this.datoDom = window.mousePositionEvt.target;
         this.parentDatoDom = this.datoDom;
         this.datoDom.style.border = "1px dashed red";
-        console.log("DATO SELECCIONADO. (SIG w/F8 para seleccionar padre)", this.datoDom);
+        let info="DATO SELECCIONADO. (SIG w/F8 para seleccionar padre)";
+        console.log(info, this.datoDom);
+        Bridge.sendMessage('infoToast',{'info':info}, 'background')
+        Bridge.sendMessage('infoToast', {'info':info}, 'devtools')
       } else if (evt.keyCode == 119 || evt.key=="w") {
         //F8 para buscar padre
         this.parentDatoDom = this.parentDatoDom.parentNode;
         this.parentDatoDom.style.border = "1px dashed green";
-        console.log("PADRE SELECCIONADO.(SIG e/F9 para obtener selector o w/F8 para cambiar padre)", this.parentDatoDom);
+        let info="PADRE SELECCIONADO.(SIG e/F9 para obtener selector o w/F8 para cambiar padre)";
+        console.log(info, this.parentDatoDom);
+        Bridge.sendMessage('infoToast',{'info':info}, 'background')
+        Bridge.sendMessage('infoToast', {'info':info}, 'devtools')
       } else if (evt.keyCode == 120 || evt.key=="e") {
         //F9 para guardar template
         //debugger;
@@ -74,7 +80,10 @@ var items=[{selector:aa, nodos:...}]
         this.items.push({ selector: this.selector, nodos: nodos });
         this.datoDom = null;
         this.parentDatoDom = null;
-        console.log("OBTENIDO SELECTOR. (SIG r/F2 para obtener textos identificativos)", this.items);
+        let info="OBTENIDO SELECTOR. (SIG r/F2 para obtener textos identificativos)";
+        console.log(info, this.items);
+        Bridge.sendMessage('infoToast',{'info':info}, 'background')
+        Bridge.sendMessage('infoToast', {'info':info}, 'devtools')
       } else if (evt.keyCode == 113 || evt.key=="r") {
         //F2 para seleccionar los textos fijos
         this.nodes.map(nodo => {
@@ -84,7 +93,10 @@ var items=[{selector:aa, nodos:...}]
             nodo.fixed = true;
           }
         });
-        console.log('OBTENIDOS TEXTOS.(SIG t/F10 para dar nombre o r/F2 par mas textos)')
+        let info='OBTENIDOS TEXTOS.(SIG t/F10 para dar nombre o r/F2 par mas textos)';
+        console.log(info)
+        Bridge.sendMessage('infoToast',{'info':info}, 'background')
+        Bridge.sendMessage('infoToast', {'info':info}, 'devtools')
       } else if (evt.keyCode == 121 || evt.key=="t") {
         console.log("aa");
        
@@ -123,6 +135,7 @@ this.nodes.map(nodo => {
           }
         }
         let id = prompt("Introduzca id");
+       
         //Se añade el id a los que no tienen
         this.items.forEach(item => {
           if (!item.id) {

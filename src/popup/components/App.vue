@@ -113,10 +113,20 @@ export default {
 
     Bridge.onMessage("pause", async message => {
       this.togglePause();
+    
     })
 
+ Bridge.onMessage("infoToast", async message => {
+   console.log(message.info);
+     this.$bvToast.toast(message.data.info, {
+          title: `Info`,
+        
+          solid: true
+        })
+ });
+
     Bridge.onMessage("do-stuff", async message => {
-     
+    
     // if(!message.data)
      //   debugger;
       //console.debug('mensaje', message);
@@ -155,6 +165,8 @@ export default {
       this.storeState();
     },
     togglePause() {
+     
+      
       if (this.isPaused) {
         this.bus.postMessage({ action: "unpause" });
         this.isPaused = false;
