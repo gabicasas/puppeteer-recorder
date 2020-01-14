@@ -1,4 +1,12 @@
 import Bridge from 'crx-bridge';
+
+
+
+
+
+
+
+
 export default class TemplateGenerator {
   constructor() {
     // Elemento seleccionado

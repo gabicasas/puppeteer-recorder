@@ -4,19 +4,6 @@ import CodeGenerator from '../code-generator/CodeGenerator'
 import Bridge from 'crx-bridge'
 
 
-debugger;
-function getword(info,tab) {
-  console.log("Word " + info.selectionText + " was clicked.");
-  chrome.tabs.create({  
-    url: "http://www.google.com/search?q=" + info.selectionText
-  });
-}
-chrome.contextMenus.create({
-  id: "myContextMenu",
-  title: "Search: %s", 
-  contexts:["selection"]//, 
- // onclick: getword
-});
 /*
 
 Este se ejecuta en la extension desde el inicio
@@ -29,10 +16,34 @@ chrome.debugger.sendCommand( Debuggee target, string method, object commandParam
 
 */
 
+
 //chrome.debugger.getTargets((targets) => {
 //  debugger
 //})
-
+chrome.contextMenus.create({
+  id: "myContextMenu",
+  title: "Recorder PFC: %s", 
+  contexts:["selection","page"]//, 
+ // onclick: getword
+});
+chrome.contextMenus.onClicked.addListener((info,tab)=>{
+  alert(JSON.stringify(info));
+  alert(JSON.stringify(tab));
+  debugger;
+  try{
+  Bridge.sendMessage('infoToast', {info:"EUREKA!!"}, `devtools@${tab.id}`)
+  }catch(e){
+    alert("DEVTOOLS:"+e.message);
+  }
+  debugger;
+  try{
+  Bridge.sendMessage('infoToast', {info:"EUREKA!!"}, `content-script${tab.id}`)
+  }catch(e){
+    alert("SCRIPTS:"+e.message);
+  }
+  
+  
+});
 
 
 class RecordingController {

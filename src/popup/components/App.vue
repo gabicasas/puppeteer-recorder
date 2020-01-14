@@ -117,6 +117,7 @@ export default {
     })
 
  Bridge.onMessage("infoToast", async message => {
+   alert(JSON.stringify(message));
    console.log(message.info);
      this.$bvToast.toast(message.data.info, {
           title: `Info`,
