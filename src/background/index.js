@@ -31,6 +31,8 @@ chrome.contextMenus.onClicked.addListener((info,tab)=>{
   alert(JSON.stringify(tab));
   debugger;
   try{
+  Bridge.allowWindowMessaging("mensajes"); 
+  Bridge.setNamespace("mensajes"); 
   Bridge.sendMessage('infoToast', {info:"EUREKA!!"}, `devtools@${tab.id}`)
   }catch(e){
     alert("DEVTOOLS:"+e.message);
