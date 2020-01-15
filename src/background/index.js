@@ -26,28 +26,14 @@ chrome.debugger.sendCommand( Debuggee target, string method, object commandParam
 const  mb = new BackgroundMessage();
 chrome.contextMenus.create({
   id: "myContextMenu",
-  title: "Recorder PFC: %s", 
+  title: "Apificar dato: %s", 
   contexts:["selection","page"]//, 
  // onclick: getword
 });
 chrome.contextMenus.onClicked.addListener((info,tab)=>{
-  alert(JSON.stringify(info));
-  alert(JSON.stringify(tab));
-  mb.notifyDevtools("hola")
-  debugger;
-  try{
-  Bridge.allowWindowMessaging("mensajes"); 
-  Bridge.setNamespace("mensajes"); 
-  Bridge.sendMessage('infoToast', {info:"EUREKA!!"}, `devtools@${tab.id}`)
-  }catch(e){
-    alert("DEVTOOLS:"+e.message);
-  }
-  debugger;
-  try{
-  Bridge.sendMessage('infoToast', {info:"EUREKA!!"}, `content-script${tab.id}`)
-  }catch(e){
-    alert("SCRIPTS:"+e.message);
-  }
+  
+  mb.notifyDevtools({data_apified:true})
+  
   
   
 });

@@ -111,8 +111,7 @@ export default {
       this.liveEvents = message;
     });
 
-Bridge.allowWindowMessaging("mensajes"); 
-  Bridge.setNamespace("mensajes"); 
+
 
 
 
@@ -122,8 +121,7 @@ Bridge.allowWindowMessaging("mensajes");
     })
 
  Bridge.onMessage("infoToast", async message => {
-   alert("Ha llegado el puto mensaje");
-   alert(JSON.stringify(message.data));
+  
    console.log(message.info);
      this.$bvToast.toast(message.data.info, {
           title: `Info`,
@@ -137,7 +135,7 @@ Bridge.allowWindowMessaging("mensajes");
     // if(!message.data)
      //   debugger;
       //console.debug('mensaje', message);
-      console.log("Aqui llega"+JSON.stringify(message));
+     
       if (this.liveEvents && this.liveEvents[0] && this.liveEvents[0].control)
         this.$chrome.storage.local.get(["recording"], ({ recording }) => {
           this.liveEvents = recording;

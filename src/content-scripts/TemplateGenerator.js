@@ -20,6 +20,14 @@ export default class TemplateGenerator {
     // Guarda el selector css relativo del elemento seleccionado
     this.selectorCss = null;
 
+
+    Bridge.onMessage("dataToAPI", async message => {
+      //debugger;
+      //alert(JSON.stringify(message.data));
+      this.selectDataNode();
+    
+    })
+
     /*
 Modelo de datos
 -selector cortado
@@ -39,15 +47,7 @@ var items=[{selector:aa, nodos:...}]
       if (evt.keyCode == 118 || evt.key=="q") {
         //F7 par cargar el dato
         //Se pausa la lectura de info
-        Bridge.sendMessage('pause',{}, 'background')
-        Bridge.sendMessage('pause', {}, 'devtools')
-        this.datoDom = window.mousePositionEvt.target;
-        this.parentDatoDom = this.datoDom;
-        this.datoDom.style.border = "1px dashed red";
-        let info="DATO SELECCIONADO. (SIG w/F8 para seleccionar padre)";
-        console.log(info, this.datoDom);
-        Bridge.sendMessage('infoToast',{'info':info}, 'background')
-        Bridge.sendMessage('infoToast', {'info':info}, 'devtools')
+        this.selectDataNode();
       } else if (evt.keyCode == 119 || evt.key=="w") {
         //F8 para buscar padre
         this.parentDatoDom = this.parentDatoDom.parentNode;
@@ -331,5 +331,20 @@ return this.result;*/
       childList: true,
       subtree: true
     });
+  }
+
+  /**
+   * Selecciona el nodo inicial que contiene el dato a apificar
+   */
+  selectDataNode(){
+    Bridge.sendMessage('pause',{}, 'background')
+        Bridge.sendMessage('pause', {}, 'devtools')
+        this.datoDom = window.mousePositionEvt.target;
+        this.parentDatoDom = this.datoDom;
+        this.datoDom.style.border = "1px dashed red";
+        let info="DATO SELECCIONADO. (SIG w/F8 para seleccionar padre)";
+        console.log(info, this.datoDom);
+        Bridge.sendMessage('infoToast',{'info':info}, 'background')
+        Bridge.sendMessage('infoToast', {'info':info}, 'devtools')
   }
 }
