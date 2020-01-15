@@ -3,6 +3,8 @@ import pptrActions from '../code-generator/pptr-actions'
 import CodeGenerator from '../code-generator/CodeGenerator'
 import Bridge from 'crx-bridge'
 
+import BackgroundMessage from './BackgroundMessage'
+
 
 /*
 
@@ -20,6 +22,8 @@ chrome.debugger.sendCommand( Debuggee target, string method, object commandParam
 //chrome.debugger.getTargets((targets) => {
 //  debugger
 //})
+
+const  mb = new BackgroundMessage();
 chrome.contextMenus.create({
   id: "myContextMenu",
   title: "Recorder PFC: %s", 
@@ -29,6 +33,7 @@ chrome.contextMenus.create({
 chrome.contextMenus.onClicked.addListener((info,tab)=>{
   alert(JSON.stringify(info));
   alert(JSON.stringify(tab));
+  mb.notifyDevtools("hola")
   debugger;
   try{
   Bridge.allowWindowMessaging("mensajes"); 

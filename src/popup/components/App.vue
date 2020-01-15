@@ -111,13 +111,19 @@ export default {
       this.liveEvents = message;
     });
 
+Bridge.allowWindowMessaging("mensajes"); 
+  Bridge.setNamespace("mensajes"); 
+
+
+
     Bridge.onMessage("pause", async message => {
       this.togglePause();
     
     })
 
  Bridge.onMessage("infoToast", async message => {
-   alert(JSON.stringify(message));
+   alert("Ha llegado el puto mensaje");
+   alert(JSON.stringify(message.data));
    console.log(message.info);
      this.$bvToast.toast(message.data.info, {
           title: `Info`,

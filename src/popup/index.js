@@ -9,6 +9,8 @@ import BootstrapVue from 'bootstrap-vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+import DevtoolsMessage from './DevtoolsMessage';
 /* import axios from 'axios'
 import VueAxios from 'vue-axios'
     
@@ -32,3 +34,8 @@ new Vue({
   el: '#root',
   render: h => h(App)
 })
+
+
+
+
+let dm=new DevtoolsMessage();
