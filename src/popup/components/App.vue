@@ -18,6 +18,11 @@
         <!-- </b-input-group-prepend> -->
       </b-input-group>
       <div class="left">
+
+        <!-- Boton scraping -->
+         <a href="#" @click="nextStepTemplateGenerator" class="header-button">
+          <img src="/images/settings.svg" alt="scraping" width="18px" />
+        </a>
         <div class="recording-badge" v-show="isRecording">
           <span class="red-dot"></span>
           {{recordingBadgeText}}
@@ -242,7 +247,7 @@ export default {
       this.storeState();
     },
     executeCode() {
-      debugger;
+     
       this.$http
         .post(this.sandboxUrl, {
           filename: `${this.functionName}.js`,
@@ -326,6 +331,9 @@ export default {
     },
     toggleShowHelp() {
       this.showHelp = !this.showHelp;
+    },
+    nextStepTemplateGenerator(){
+       Bridge.sendMessage("nextStepTemplateGenerator",{},"content-script");
     }
   },
   computed: {

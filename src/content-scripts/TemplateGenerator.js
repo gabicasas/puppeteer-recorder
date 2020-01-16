@@ -28,6 +28,13 @@ export default class TemplateGenerator {
     
     })
 
+    Bridge.onMessage("nextStepTemplateGenerator", async message => {
+      //debugger;
+      //alert(JSON.stringify(message.data));
+      alert("Ejecutar siguiente paso del template generator");
+    
+    })
+
     /*
 Modelo de datos
 -selector cortado
