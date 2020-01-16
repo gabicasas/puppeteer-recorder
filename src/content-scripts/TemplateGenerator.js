@@ -68,6 +68,7 @@ var items=[{selector:aa, nodos:...}]
         this.obtainTextFixed();
       } else if (evt.keyCode == 121 || evt.key=="t") {
         this.sendInfoToExtension();
+        this.observeChanges();
       }
     });
   }
@@ -163,10 +164,10 @@ return this.result;*/
 
   observeChanges() {
     //Todos los cambios
-    observer = new MutationObserver(function(a) {
+    let observer = new MutationObserver((a)=> {
       a.map(element => {
         //console.log(obtainCssSelector(element.target, document.body));
-
+        
         this.items.map(item => {
           var isThisItem = true;
           //Buscamos el psoible padore en funcion de lo largo de la cadena del selector
@@ -177,7 +178,7 @@ return this.result;*/
           //Se busca el caso en que el nodo que cambio no es solo el texto
           while (nodes.length != 1 && end != 0) {
             nodes = element.target.querySelectorAll(
-              selectorDom(item.selector.slice(start, end))
+              this.selectorDom(item.selector.slice(start, end))
             );
             end--;
           }
@@ -210,7 +211,7 @@ return this.result;*/
             }
             if (isThisItem) {
               //Se calcula el numero de nodos de texto a ver si coincide
-              let nodosPosibles = listaNodosTemplate(parent);
+              let nodosPosibles = this.listaNodosTemplate(parent);
               if (nodosPosibles.length == item.nodos.length) {
                 //console.log('puede ser',item, parent);
                 for (let i = 0; i < item.nodos.length; i++) {
