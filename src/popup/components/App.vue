@@ -45,6 +45,7 @@
               @click="toggleRecord"
               :class="isRecording ? 'btn-danger' : 'btn-primary'"
             >{{recordButtonText}}</button>
+            <button class="btn btn-sm btn-primary" @click="showResultsTab=!showResultsTab">Mostrar datos API</button>
             <button
               class="btn btn-sm btn-primary btn-outline-primary"
               @click="togglePause"
@@ -62,6 +63,7 @@
           />
           <div class="results-footer" v-show="showResultsTab">
             <button class="btn btn-sm btn-primary" @click="restart" v-show="code">Reiniciar</button>
+             <button class="btn btn-sm btn-primary" @click="showResultsTab=!showResultsTab">Mostrar datos API</button>
 
             <b-button variant="primary" @click="executeCode" v-show="code">Ejecutar codigo</b-button>
             <a href="#" v-clipboard:copy="code" @click="setCopying" v-show="code">{{copyLinkText}}</a>
@@ -81,6 +83,7 @@ import ResultsTab from "./ResultsTab.vue";
 import HelpTab from "./HelpTab.vue";
 import Bridge from "crx-bridge";
 import EventBus from "../index.js";
+import ScraperData from './scraperData.js';
 
 export default {
   name: "App",
@@ -113,6 +116,18 @@ export default {
 
 
 
+    Bridge.onMessage("dataScraped", async message => {
+      this.$bvToast.toast("Ha llegado dato", {
+          title: `Info`,
+        
+          solid: true
+        })
+      debugger; 
+      
+      let result=(new ScraperData()).parse(message.data); 
+      this.code=JSON.stringify(result," ",2);
+    
+    })
 
 
     Bridge.onMessage("pause", async message => {
