@@ -203,7 +203,7 @@ export default class CodeGenerator {
       * @param {*} href Codigo custom
       */
   _getTemplateCode(selector,value,href){
-    debugger;
+   
     let nodes=selector;
     let action=value;
 

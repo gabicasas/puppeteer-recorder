@@ -127,7 +127,7 @@ export default {
         
           solid: true
         })
-      debugger; 
+     
       
       let result=(new ScraperData()).parse(message.data); 
       this.code=JSON.stringify(result," ",2);

@@ -165,6 +165,7 @@ return this.result;*/
   observeChanges() {
     //Todos los cambios
     let observer = new MutationObserver((a)=> {
+     
       a.map(element => {
         //console.log(obtainCssSelector(element.target, document.body));
         
@@ -235,6 +236,7 @@ return this.result;*/
               console.info(item);
               if (!this.result[item.id]) this.result[item.id] = {};
               this.result[item.id][item.key] = item.value;
+              Bridge.sendMessage('dataScraped', this.result, 'devtools')
             }
           }
         });
