@@ -68,6 +68,7 @@ var items=[{selector:aa, nodos:...}]
         this.obtainTextFixed();
       } else if (evt.keyCode == 121 || evt.key=="t") {
         this.sendInfoToExtension();
+      
         this.observeChanges();
       }
     });
@@ -230,7 +231,7 @@ return this.result;*/
             if (isThisItem) {
               item.key = "";
               item.nodos.map(nodo => {
-                if (nodo.fixed) item.key += "$$$" + nodo.value;
+                if (nodo.fixed) item.key += "_" + nodo.value;
               });
               item.value = target.firstChild.nodeValue;
               console.info(item);
@@ -296,7 +297,8 @@ return this.result;*/
             //Esto es una forma de saberque la estructura del dom es similar
             let newItem = {
               selector: newSelector,
-              nodos: newNodos
+              nodos: newNodos,
+              value:element.firstChild.nodeValue
             }; // Para guardar en lista auxiliar
             this.calculatedItems.push(newItem);
             element.style.border = "1px dashed green";
@@ -314,6 +316,7 @@ return this.result;*/
   }
 
   obtainTextFixed(){
+    console.log(this.items);
     this.nodes.map(nodo => {
       if (nodo.node == window.mousePositionEvt.target.firstChild) {
         //firstChild asegura bajar al texto
@@ -321,6 +324,13 @@ return this.result;*/
         nodo.fixed = true;
       }
     });
+
+   
+
+
+
+
+
     let info='OBTENIDOS TEXTOS.(SIG t/F10 para dar nombre o r/F2 par mas textos)';
     console.log(info)
     Bridge.sendMessage('infoToast',{'info':info}, 'background')
@@ -364,6 +374,7 @@ ttttttt ///Actualizar los nodos de  this.calculatedItems
         //this.calculatedItems.forEach(item => item.nodos[i].fixed=true);
       }
     }
+  
     let id = prompt("Introduzca id");
    
     //Se añade el id a los que no tienen
@@ -373,10 +384,27 @@ ttttttt ///Actualizar los nodos de  this.calculatedItems
       }
     });
 
+  
+
+
+
     this.calculatedItems.forEach(el => {
       el.id = id;
       this.items.push(el);
     });
+    // Se le añade la key a la primera lectura
+    this.items.forEach(item =>{
+      item.key='';
+      item.nodos.map(nodo => {
+        if (nodo.fixed) item.key += "_" + nodo.value;
+      });
+      //Se crea el elemento de resultado
+      if (!this.result[item.id]) this.result[item.id] = {};
+      if(!this.result[item.id][item.key]) this.result[item.id][item.key] = item.value;
+    })
+
+    console.log("RESULT",this.result);
+
     this.calculatedItems = [];
 
     //Se envian los items para que se muestre el dato scrapeado (pendiente qeu se vea la actualizacion de este)

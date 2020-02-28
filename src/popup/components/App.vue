@@ -122,11 +122,11 @@ export default {
 
 
     Bridge.onMessage("dataScraped", async message => {
-      this.$bvToast.toast("Ha llegado dato", {
+    /*  this.$bvToast.toast("Ha llegado dato", {
           title: `Info`,
         
           solid: true
-        })
+        })*/
      
       
       let result=(new ScraperData()).parse(message.data); 
