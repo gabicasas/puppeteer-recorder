@@ -1,11 +1,4 @@
-import Bridge from 'crx-bridge';
-
-
-
-
-
-
-
+import Bridge from "crx-bridge";
 
 export default class TemplateGenerator {
   constructor() {
@@ -20,20 +13,17 @@ export default class TemplateGenerator {
     // Guarda el selector css relativo del elemento seleccionado
     this.selectorCss = null;
 
-
     Bridge.onMessage("dataToAPI", async message => {
       //debugger;
       //alert(JSON.stringify(message.data));
       this.selectDataNode();
-    
-    })
+    });
 
     Bridge.onMessage("nextStepTemplateGenerator", async message => {
       //debugger;
       //alert(JSON.stringify(message.data));
       alert("Ejecutar siguiente paso del template generator");
-    
-    })
+    });
 
     /*
 Modelo de datos
@@ -50,31 +40,30 @@ var items=[{selector:aa, nodos:...}]
     });
 
     window.addEventListener("keydown", evt => {
-      
-      if (evt.keyCode == 118 || evt.key=="q") {
+      if (evt.keyCode == 118 || evt.key == "q") {
         //F7 par cargar el dato
         //Se pausa la lectura de info
         this.selectDataNode();
-      } else if (evt.keyCode == 119 || evt.key=="w") {
+      } else if (evt.keyCode == 119 || evt.key == "w") {
         //F8 para buscar padre
-       
+
         this.selectParentDataNode();
-      } else if (evt.keyCode == 120 || evt.key=="e") {
+      } else if (evt.keyCode == 120 || evt.key == "e") {
         //F9 para guardar template
         //debugger;
         this.obtainSimilarNodes();
-      } else if (evt.keyCode == 113 || evt.key=="r") {
+      } else if (evt.keyCode == 113 || evt.key == "r") {
         //F2 para seleccionar los textos fijos
         this.obtainTextFixed();
-      } else if (evt.keyCode == 121 || evt.key=="t") {
+      } else if (evt.keyCode == 121 || evt.key == "t") {
         this.sendInfoToExtension();
-      
+
         this.observeChanges();
       }
     });
   }
   start() {
-    console.log("aranacado templateGenerator "+window.location.href);
+    console.log("aranacado templateGenerator " + window.location.href);
   }
 
   //TODO, filtar par eliminar los texto vaciones con el filtro de la propia funcion
@@ -165,11 +154,10 @@ return this.result;*/
 
   observeChanges() {
     //Todos los cambios
-    let observer = new MutationObserver((a)=> {
-     
+    let observer = new MutationObserver(a => {
       a.map(element => {
         //console.log(obtainCssSelector(element.target, document.body));
-        
+
         this.items.map(item => {
           var isThisItem = true;
           //Buscamos el psoible padore en funcion de lo largo de la cadena del selector
@@ -229,15 +217,12 @@ return this.result;*/
             }
 
             if (isThisItem) {
-              item.key = "";
-              item.nodos.map(nodo => {
-                if (nodo.fixed) item.key += "_" + nodo.value;
-              });
+              this.setKeyToItem(item);
               item.value = target.firstChild.nodeValue;
               console.info(item);
               if (!this.result[item.id]) this.result[item.id] = {};
               this.result[item.id][item.key] = item.value;
-              Bridge.sendMessage('dataScraped', this.result, 'devtools')
+              Bridge.sendMessage("dataScraped", this.result, "devtools");
             }
           }
         });
@@ -252,70 +237,72 @@ return this.result;*/
   /**
    * Selecciona el nodo inicial que contiene el dato a apificar
    */
-  selectDataNode(){
-    Bridge.sendMessage('pause',{}, 'background')
-        Bridge.sendMessage('pause', {}, 'devtools')
-        this.datoDom = window.mousePositionEvt.target;
-        this.parentDatoDom = this.datoDom;
-        this.datoDom.style.border = "1px dashed red";
-        let info="DATO SELECCIONADO. (SIG w/F8 para seleccionar padre)";
-        console.log(info, this.datoDom);
-        Bridge.sendMessage('infoToast',{'info':info}, 'background')
-        Bridge.sendMessage('infoToast', {'info':info}, 'devtools')
+  selectDataNode() {
+    Bridge.sendMessage("pause", {}, "background");
+    Bridge.sendMessage("pause", {}, "devtools");
+    this.datoDom = window.mousePositionEvt.target;
+    this.parentDatoDom = this.datoDom;
+    this.datoDom.style.border = "1px dashed red";
+    let info = "DATO SELECCIONADO. (SIG w/F8 para seleccionar padre)";
+    console.log(info, this.datoDom);
+    Bridge.sendMessage("infoToast", { info: info }, "background");
+    Bridge.sendMessage("infoToast", { info: info }, "devtools");
   }
 
   /**
    * Se busca el padre, o abuelo, etc del nodo seleccionado
    */
-  selectParentDataNode(){
-    if(this.parentDatoDom!=null && this.parentDatoDom!=this.datoDom)
-      this.parentDatoDom.style.border=""; // Esto puede romper estilos de la pagina, revisar
+  selectParentDataNode() {
+    if (this.parentDatoDom != null && this.parentDatoDom != this.datoDom)
+      this.parentDatoDom.style.border = ""; // Esto puede romper estilos de la pagina, revisar
     this.parentDatoDom = this.parentDatoDom.parentNode;
     this.parentDatoDom.style.border = "1px dashed green";
-    let info="PADRE SELECCIONADO.(SIG e/F9 para obtener selector o w/F8 para cambiar padre)";
+    let info =
+      "PADRE SELECCIONADO.(SIG e/F9 para obtener selector o w/F8 para cambiar padre)";
     console.log(info, this.parentDatoDom);
-    Bridge.sendMessage('infoToast',{'info':info}, 'background')
-    Bridge.sendMessage('infoToast', {'info':info}, 'devtools')
+    Bridge.sendMessage("infoToast", { info: info }, "background");
+    Bridge.sendMessage("infoToast", { info: info }, "devtools");
   }
 
-  obtainSimilarNodes(){
+  obtainSimilarNodes() {
     this.selector = this.obtainCssSelector(this.datoDom, this.parentDatoDom);
-        let nodos = this.textNodesUnder(this.parentDatoDom);
+    let nodos = this.textNodesUnder(this.parentDatoDom);
 
-        /* nodos.map(nodo => {
+    /* nodos.map(nodo => {
    nodo.node.parentNode.addEventListener("click", (e) =>{
    });
 })  */
-        this.selectorCss = this.selectorDom(this.selector);
-        document.querySelectorAll(this.selectorCss).forEach(element => {
-          let newParent = element;
-          for (let i = 0; i < this.selector.length; i++)
-            newParent = newParent.parentNode;
-          let newSelector = this.obtainCssSelector(element, newParent);
-          let newNodos = this.textNodesUnder(newParent);
-          if (newNodos.length == nodos.length) {
-            //Esto es una forma de saberque la estructura del dom es similar
-            let newItem = {
-              selector: newSelector,
-              nodos: newNodos,
-              value:element.firstChild.nodeValue
-            }; // Para guardar en lista auxiliar
-            this.calculatedItems.push(newItem);
-            element.style.border = "1px dashed green";
-          }
-        });
-        //los guardo para el evento que seleccina el texto fijo
-        this.nodes = nodos;
-        this.items.push({ selector: this.selector, nodos: nodos });
-        this.datoDom = null;
-        this.parentDatoDom = null;
-        let info="OBTENIDO SELECTOR. (SIG r/F2 para obtener textos identificativos)";
-        console.log(info, this.items);
-        Bridge.sendMessage('infoToast',{'info':info}, 'background')
-        Bridge.sendMessage('infoToast', {'info':info}, 'devtools')
+    this.selectorCss = this.selectorDom(this.selector);
+    document.querySelectorAll(this.selectorCss).forEach(element => {
+      let newParent = element;
+      for (let i = 0; i < this.selector.length; i++)
+        newParent = newParent.parentNode;
+      let newSelector = this.obtainCssSelector(element, newParent);
+      let newNodos = this.textNodesUnder(newParent);
+      if (newNodos.length == nodos.length) {
+        //Esto es una forma de saberque la estructura del dom es similar
+        let newItem = {
+          selector: newSelector,
+          nodos: newNodos,
+          value: element.firstChild.nodeValue
+        }; // Para guardar en lista auxiliar
+        this.calculatedItems.push(newItem);
+        element.style.border = "1px dashed green";
+      }
+    });
+    //los guardo para el evento que seleccina el texto fijo
+    this.nodes = nodos;
+    this.items.push({ selector: this.selector, nodos: nodos });
+    this.datoDom = null;
+    this.parentDatoDom = null;
+    let info =
+      "OBTENIDO SELECTOR. (SIG r/F2 para obtener textos identificativos)";
+    console.log(info, this.items);
+    Bridge.sendMessage("infoToast", { info: info }, "background");
+    Bridge.sendMessage("infoToast", { info: info }, "devtools");
   }
 
-  obtainTextFixed(){
+  obtainTextFixed() {
     console.log(this.items);
     this.nodes.map(nodo => {
       if (nodo.node == window.mousePositionEvt.target.firstChild) {
@@ -325,41 +312,50 @@ return this.result;*/
       }
     });
 
-   
-
-
-
-
-
-    let info='OBTENIDOS TEXTOS.(SIG t/F10 para dar nombre o r/F2 par mas textos)';
-    console.log(info)
-    Bridge.sendMessage('infoToast',{'info':info}, 'background')
-    Bridge.sendMessage('infoToast', {'info':info}, 'devtools')
+    let info =
+      "OBTENIDOS TEXTOS.(SIG t/F10 para dar nombre o r/F2 par mas textos)";
+    console.log(info);
+    Bridge.sendMessage("infoToast", { info: info }, "background");
+    Bridge.sendMessage("infoToast", { info: info }, "devtools");
   }
-  
-   sendInfoToExtension() {
+
+  setKeyToItem(item) {
+    if (!item.key) {
+      item.key = "";
+      item.nodos.map(nodo => {
+        if (nodo.fixed) item.key += "_" + nodo.value;
+      });
+      if (item.key == "") {
+        item.key = Math.random();
+      }
+    }
+  }
+
+  sendInfoToExtension() {
     console.log("aa");
-       
-    console.log("Se envia a la extension el dato")
+
+    console.log("Se envia a la extension el dato");
     const msg = {
-      selector: JSON.stringify({selector: this.selectorCss, 
-                                selectorDom:this.selector,
-                                nodes: this.nodes,
-                                customFunction: this.items[0]?this.items[0].id:"_"}),
+      selector: JSON.stringify({
+        selector: this.selectorCss,
+        selectorDom: this.selector,
+        nodes: this.nodes,
+        customFunction: this.items[0] ? this.items[0].id : "_"
+      }),
       value: null,
       tagName: null,
       action: "template",
-      keyCode:  this.items[0]?this.items[0].id:"_",
-      href:  null,
+      keyCode: this.items[0] ? this.items[0].id : "_",
+      href: null,
       coordinates: null
-    }
-    Bridge.sendMessage('pause',{}, 'background')
-    Bridge.sendMessage('pause', {}, 'devtools')
-    Bridge.sendMessage('do-stuff',msg, 'background')
-    Bridge.sendMessage('do-stuff', msg, 'devtools')
-   // Bridge.sendMessage('do-stuff', msg, 'content-script')
-    
-   //F10 Actualizar nodos fijos
+    };
+    Bridge.sendMessage("pause", {}, "background");
+    Bridge.sendMessage("pause", {}, "devtools");
+    Bridge.sendMessage("do-stuff", msg, "background");
+    Bridge.sendMessage("do-stuff", msg, "devtools");
+    // Bridge.sendMessage('do-stuff', msg, 'content-script')
+
+    //F10 Actualizar nodos fijos
     /* alert('actualiza nodos fijos');
 this.nodes.map(nodo => {
 ttttttt ///Actualizar los nodos de  this.calculatedItems
@@ -374,9 +370,9 @@ ttttttt ///Actualizar los nodos de  this.calculatedItems
         //this.calculatedItems.forEach(item => item.nodos[i].fixed=true);
       }
     }
-  
+
     let id = prompt("Introduzca id");
-   
+
     //Se añade el id a los que no tienen
     this.items.forEach(item => {
       if (!item.id) {
@@ -384,31 +380,24 @@ ttttttt ///Actualizar los nodos de  this.calculatedItems
       }
     });
 
-  
-
-
-
     this.calculatedItems.forEach(el => {
       el.id = id;
       this.items.push(el);
     });
     // Se le añade la key a la primera lectura
-    this.items.forEach(item =>{
-      item.key='';
-      item.nodos.map(nodo => {
-        if (nodo.fixed) item.key += "_" + nodo.value;
-      });
+    this.items.forEach(item => {
+      this.setKeyToItem(item);
       //Se crea el elemento de resultado
       if (!this.result[item.id]) this.result[item.id] = {};
-      if(!this.result[item.id][item.key]) this.result[item.id][item.key] = item.value;
-    })
+      if (!this.result[item.id][item.key])
+        this.result[item.id][item.key] = item.value;
+    });
 
-    console.log("RESULT",this.result);
+    console.log("RESULT", this.result);
 
     this.calculatedItems = [];
 
     //Se envian los items para que se muestre el dato scrapeado (pendiente qeu se vea la actualizacion de este)
-    Bridge.sendMessage('dataScraped', this.items, 'devtools')
-   }
-
+    Bridge.sendMessage("dataScraped", this.items, "devtools");
+  }
 }
