@@ -232,6 +232,7 @@ return this.result;*/
       childList: true,
       subtree: true
     });
+    
   }
 
   /**
