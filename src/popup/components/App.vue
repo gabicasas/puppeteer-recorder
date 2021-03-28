@@ -89,6 +89,7 @@ import HelpTab from "./HelpTab.vue";
 import Bridge from "crx-bridge";
 import EventBus from "../index.js";
 import ScraperData from './scraperData.js';
+import axios from "axios";
 
 export default {
   name: "App",
@@ -181,6 +182,7 @@ export default {
   },
   methods: {
     toggleRecord() {
+      alert("toggleRecord");
       if (this.isRecording) {
         this.stop();
       } else {
@@ -218,7 +220,10 @@ export default {
           console.debug("loaded options", options);
           this.recording = recording;
           const codeOptions = options ? options.code : {};
-        
+          alert("a");
+          axios.post('/dondesea' ,{liveEvents:liveEvents,codeOptions:codeOptions}).then(result => {})
+          .cacth(error => {});
+          console.log("send data to micro :",{liveEvents:liveEvents,codeOptions:codeOptions});
 
           const codeGen = new CodeGenerator(codeOptions);
           this.sandboxUrl = codeGen._options.sandboxUrl;
